@@ -1,1 +1,103 @@
-/* Reserved for future custom variables. Tailwind handles all styling. */
+/* Zusatzstyles für Interaktionen und Animationen */
+
+.stat-card {
+  border-radius: 1.5rem;
+  border: 1px solid rgba(30, 41, 59, 0.7);
+  background-color: rgba(255, 255, 255, 0.05);
+  padding: 1.25rem;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 28px 65px rgba(5, 9, 15, 0.55);
+}
+
+.tab-button {
+  border-radius: 9999px;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgb(148, 163, 184);
+  transition: all 0.2s ease;
+}
+
+.tab-button.active {
+  background-color: rgb(91, 212, 255);
+  color: rgb(15, 23, 42);
+  box-shadow: 0 14px 35px rgba(91, 212, 255, 0.25);
+}
+
+.tab-button:not(.active):hover {
+  color: rgb(91, 212, 255);
+}
+
+.tutorial-overlay {
+  opacity: 0;
+  transform: translateY(12px);
+}
+
+.tutorial-overlay.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.tutorial-highlight {
+  box-shadow: 0 0 0 4px rgba(91, 212, 255, 0.6);
+  border-radius: 1.5rem;
+}
+
+.action-stage.feedback-success {
+  box-shadow: 0 0 65px rgba(102, 255, 166, 0.35), inset 0 0 35px rgba(102, 255, 166, 0.2);
+}
+
+.action-stage.feedback-fail {
+  box-shadow: 0 0 65px rgba(255, 107, 107, 0.35), inset 0 0 35px rgba(255, 107, 107, 0.2);
+}
+
+.value-pop {
+  animation: valuePop 0.5s ease;
+}
+
+@keyframes valuePop {
+  0% {
+    transform: scale(1);
+  }
+  30% {
+    transform: scale(1.08);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.ticker-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  margin-right: 0.5rem;
+  border-radius: 9999px;
+  background-color: rgba(15, 23, 42, 0.6);
+  font-size: 0.875rem;
+}
+
+.card.good {
+  border-color: rgba(102, 255, 166, 0.6);
+  box-shadow: 0 0 45px rgba(102, 255, 166, 0.35);
+}
+
+.card.bad {
+  border-color: rgba(255, 107, 107, 0.6);
+  box-shadow: 0 0 45px rgba(255, 107, 107, 0.35);
+}
+
+.card.neutral {
+  border-color: rgba(91, 212, 255, 0.4);
+}
+
+.card__status.win {
+  color: rgb(102, 255, 166);
+}
+
+.card__status.lose {
+  color: rgb(255, 107, 107);
+}
