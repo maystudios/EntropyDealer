@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Entropy Dealer</title>
+  <link rel="stylesheet" href="css/app.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="status-bar">
+      <div class="stat stat--primary">
+        <span class="label">Bankroll</span>
+        <span class="value" id="money"></span>
+      </div>
+      <div class="stat">
+        <span class="label">Best</span>
+        <span class="value" id="bestScore"></span>
+      </div>
+      <div class="stat">
+        <span class="label">Success Chance</span>
+        <span class="value" id="effectiveProbability"></span>
+      </div>
+      <div class="stat">
+        <span class="label">Base</span>
+        <span class="value" id="baseProbability"></span>
+      </div>
+      <div class="stat">
+        <span class="label">Edge</span>
+        <span class="value" id="edge"></span>
+      </div>
+      <div class="stat">
+        <span class="label">Turn</span>
+        <span class="value" id="turn"></span>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="panel">
+        <h2 class="panel__title">Drawn Card</h2>
+        <article class="card" id="cardDisplay">
+          <h3 class="card__title">Awaiting draw…</h3>
+          <p class="card__description">Press "Draw &amp; Resolve" to begin the run.</p>
+        </article>
+      </section>
+
+      <section class="panel">
+        <h2 class="panel__title">Bet Selection</h2>
+        <div class="button-row" id="betButtons" aria-label="Bet amounts"></div>
+      </section>
+
+      <section class="panel">
+        <h2 class="panel__title">Actions</h2>
+        <div class="actions">
+          <button class="btn btn--primary" id="drawButton">Draw &amp; Resolve</button>
+          <button class="btn btn--secondary" id="restartButton">New Run</button>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2 class="panel__title">Result Ticker</h2>
+        <ul class="ticker" id="tickerList" aria-live="polite"></ul>
+      </section>
+    </main>
+  </div>
+
+  <div class="modal" id="shopModal" role="dialog" aria-modal="true" aria-labelledby="shopTitle">
+    <div class="modal__backdrop" id="modalBackdrop"></div>
+    <div class="modal__content">
+      <h2 class="modal__title" id="shopTitle">Shop Offer</h2>
+      <p class="modal__body" id="shopDescription"></p>
+      <div class="modal__meta">
+        <span class="label">Price</span>
+        <span class="value" id="shopPrice"></span>
+      </div>
+      <div class="modal__actions">
+        <button class="btn btn--primary" id="buyButton">Buy</button>
+        <button class="btn" id="skipShopButton">Skip</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/utils.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
