@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entropy Dealer</title>
+    <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Entropy Dealer</h1>
+            <p class="subtitle">Handle mit Wahrscheinlichkeiten</p>
+        </header>
+
+        <main id="game-screen">
+            <!-- Stats Section -->
+            <div class="stats-panel">
+                <div class="stat-item">
+                    <span class="stat-label">Kapital</span>
+                    <span class="stat-value" id="money">100</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Zug</span>
+                    <span class="stat-value" id="turn">1</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Erfolgsquote</span>
+                    <span class="stat-value" id="p-eff">50%</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Hauskante</span>
+                    <span class="stat-value" id="edge">0.00</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Best Score</span>
+                    <span class="stat-value" id="best-score">0</span>
+                </div>
+            </div>
+
+            <!-- Bet Selection -->
+            <div class="bet-panel" id="bet-panel">
+                <h3>Wähle deinen Einsatz</h3>
+                <div class="bet-buttons">
+                    <button class="bet-btn" data-bet="5">5</button>
+                    <button class="bet-btn active" data-bet="10">10</button>
+                    <button class="bet-btn" data-bet="20">20</button>
+                    <button class="bet-btn" data-bet="40">40</button>
+                </div>
+            </div>
+
+            <!-- Card Display -->
+            <div class="card-panel" id="card-panel" style="display: none;">
+                <div class="card">
+                    <h3 class="card-title" id="card-name">Karte</h3>
+                    <p class="card-description" id="card-description">Beschreibung</p>
+                </div>
+            </div>
+
+            <!-- Action Button -->
+            <div class="action-panel">
+                <button class="action-btn" id="action-btn">Karte ziehen</button>
+            </div>
+
+            <!-- Feedback -->
+            <div class="feedback" id="feedback"></div>
+
+            <!-- Shop Panel -->
+            <div class="shop-panel" id="shop-panel" style="display: none;">
+                <h3>Shop</h3>
+                <div class="shop-item" id="shop-item">
+                    <h4 id="shop-item-name">Item</h4>
+                    <p id="shop-item-description">Beschreibung</p>
+                    <p class="shop-price">Preis: <span id="shop-item-price">0</span></p>
+                    <div class="shop-buttons">
+                        <button class="shop-btn buy" id="buy-btn">Kaufen</button>
+                        <button class="shop-btn skip" id="skip-btn">Weiter</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Game Over Screen -->
+        <div id="game-over-screen" style="display: none;">
+            <div class="game-over-panel">
+                <h2 id="game-over-title">Run beendet</h2>
+                <p id="game-over-message"></p>
+                <div class="game-over-stats">
+                    <p>Erreichte Züge: <span id="final-turns">0</span></p>
+                    <p>Endkapital: <span id="final-money">0</span></p>
+                </div>
+                <button class="action-btn" id="restart-btn">Neuer Run</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/utils.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
