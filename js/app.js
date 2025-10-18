@@ -166,6 +166,42 @@
     skipShopButton: document.getElementById('skipShopButton'),
   };
 
+  const CARD_GOOD_CLASSES = ['border-[#66ffa6]', 'shadow-[0_0_35px_rgba(102,255,166,0.35)]'];
+  const CARD_BAD_CLASSES = ['border-[#ff6b6b]', 'shadow-[0_0_35px_rgba(255,107,107,0.35)]'];
+  const BET_BUTTON_BASE_CLASSES =
+    'w-full rounded-2xl border border-slate-800/70 bg-slate-900/60 px-4 py-3 text-sm font-semibold text-slate-200 transition duration-200 hover:border-[#5bd4ff] hover:bg-slate-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#5bd4ff] disabled:cursor-not-allowed disabled:opacity-50';
+  const BET_BUTTON_SELECTED_CLASSES =
+    'border-[#5bd4ff] bg-[#123042] text-[#5bd4ff] shadow-[0_0_25px_rgba(91,212,255,0.35)]';
+  const TICKER_ITEM_BASE_CLASSES =
+    'flex items-start justify-between gap-3 rounded-2xl border border-slate-800/70 bg-slate-900/70 px-4 py-3 text-sm text-slate-200 shadow-[inset_0_1px_0_rgba(255,255,255,0.02)]';
+  const TICKER_ITEM_WIN_CLASSES = ['border-[#66ffa6]', 'text-[#66ffa6]'];
+  const TICKER_ITEM_LOSE_CLASSES = ['border-[#ff6b6b]', 'text-[#ff6b6b]'];
+  const BUY_BUTTON_ACCENT_CLASSES = [
+    'bg-accent',
+    'hover:bg-[#73dcff]',
+    'text-midnight',
+    'focus-visible:outline-[#5bd4ff]',
+    'shadow-[0_20px_45px_rgba(91,212,255,0.3)]',
+  ];
+  const BUY_BUTTON_DANGER_CLASSES = [
+    'bg-danger',
+    'hover:bg-[#ff8787]',
+    'text-[#1b0a0a]',
+    'focus-visible:outline-[#ff6b6b]',
+    'shadow-[0_20px_45px_rgba(255,107,107,0.35)]',
+  ];
+
+  function applyBuyButtonStyle(canAfford) {
+    const removeClasses = canAfford ? BUY_BUTTON_DANGER_CLASSES : BUY_BUTTON_ACCENT_CLASSES;
+    removeClasses.forEach((cls) => elements.buyButton.classList.remove(cls));
+    const addClasses = canAfford ? BUY_BUTTON_ACCENT_CLASSES : BUY_BUTTON_DANGER_CLASSES;
+    addClasses.forEach((cls) => {
+      if (!elements.buyButton.classList.contains(cls)) {
+        elements.buyButton.classList.add(cls);
+      }
+    });
+  }
+
   function createTempModifiers() {
     return {
       probability: 0,
@@ -225,10 +261,9 @@
     elements.betButtons.innerHTML = '';
     state.betOptions.forEach((bet) => {
       const button = document.createElement('button');
-      button.className = 'btn btn--outline';
-      if (bet === state.selectedBet) {
-        button.classList.add('btn--selected');
-      }
+      button.className = `${BET_BUTTON_BASE_CLASSES} ${
+        bet === state.selectedBet ? BET_BUTTON_SELECTED_CLASSES : ''
+      }`.trim();
       button.textContent = `$${bet}`;
       button.type = 'button';
       button.addEventListener('click', () => {
@@ -271,7 +306,8 @@
   function updateCardDisplay(card) {
     const title = elements.cardDisplay.querySelector('.card__title');
     const description = elements.cardDisplay.querySelector('.card__description');
-    elements.cardDisplay.classList.remove('card--good', 'card--bad');
+    CARD_GOOD_CLASSES.forEach((cls) => elements.cardDisplay.classList.remove(cls));
+    CARD_BAD_CLASSES.forEach((cls) => elements.cardDisplay.classList.remove(cls));
 
     if (!card) {
       title.textContent = 'Awaiting draw…';
@@ -283,10 +319,10 @@
     description.textContent = card.description;
 
     if (card.rarity === 'good') {
-      elements.cardDisplay.classList.add('card--good');
+      CARD_GOOD_CLASSES.forEach((cls) => elements.cardDisplay.classList.add(cls));
     }
     if (card.rarity === 'bad') {
-      elements.cardDisplay.classList.add('card--bad');
+      CARD_BAD_CLASSES.forEach((cls) => elements.cardDisplay.classList.add(cls));
     }
   }
 
@@ -296,14 +332,14 @@
 
   function pushTickerMessage(source, text, outcome, probability) {
     const li = document.createElement('li');
-    li.className = 'ticker__item';
-    if (outcome === 'win') li.classList.add('ticker__item--win');
-    if (outcome === 'lose') li.classList.add('ticker__item--lose');
+    li.className = TICKER_ITEM_BASE_CLASSES;
+    if (outcome === 'win') TICKER_ITEM_WIN_CLASSES.forEach((cls) => li.classList.add(cls));
+    if (outcome === 'lose') TICKER_ITEM_LOSE_CLASSES.forEach((cls) => li.classList.add(cls));
     li.innerHTML = `<span>${source}: ${text}</span>`;
     if (typeof probability === 'number') {
       const span = document.createElement('span');
-      span.className = 'ticker__prob';
-      span.textContent = `${Math.round(probability * 100)}%`; 
+      span.className = 'text-xs font-medium text-slate-400';
+      span.textContent = `${Math.round(probability * 100)}%`;
       li.appendChild(span);
     }
     elements.tickerList.prepend(li);
@@ -361,14 +397,15 @@
     if (!offer) return;
     elements.shopDescription.textContent = `${offer.name}: ${offer.description}`;
     elements.shopPrice.textContent = `$${offer.price}`;
-    elements.shopModal.classList.add('visible');
-    elements.buyButton.disabled = state.money < offer.price;
-    elements.buyButton.classList.toggle('btn--danger', state.money < offer.price);
+    elements.shopModal.classList.remove('hidden');
+    const canAfford = state.money >= offer.price;
+    elements.buyButton.disabled = !canAfford;
+    applyBuyButtonStyle(canAfford);
     elements.drawButton.disabled = true;
   }
 
   function closeShopModal() {
-    elements.shopModal.classList.remove('visible');
+    elements.shopModal.classList.add('hidden');
     state.currentShopItem = null;
     if (state.runActive) {
       elements.drawButton.disabled = false;
@@ -480,6 +517,7 @@
     loadBestScore();
     renderBetButtons();
     attachEventListeners();
+    applyBuyButtonStyle(true);
     resetState();
     elements.bestScore.textContent = `$${state.bestScore.toFixed(0)}`;
   }

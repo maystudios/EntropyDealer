@@ -4,78 +4,125 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Entropy Dealer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            midnight: '#0b0f15',
+            accent: '#5bd4ff',
+            success: '#66ffa6',
+            danger: '#ff6b6b',
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          },
+        },
+      },
+    };
+  </script>
   <link rel="stylesheet" href="css/app.css" />
 </head>
-<body>
-  <div class="app">
-    <header class="status-bar">
-      <div class="stat stat--primary">
-        <span class="label">Bankroll</span>
-        <span class="value" id="money"></span>
-      </div>
-      <div class="stat">
-        <span class="label">Best</span>
-        <span class="value" id="bestScore"></span>
-      </div>
-      <div class="stat">
-        <span class="label">Success Chance</span>
-        <span class="value" id="effectiveProbability"></span>
-      </div>
-      <div class="stat">
-        <span class="label">Base</span>
-        <span class="value" id="baseProbability"></span>
-      </div>
-      <div class="stat">
-        <span class="label">Edge</span>
-        <span class="value" id="edge"></span>
-      </div>
-      <div class="stat">
-        <span class="label">Turn</span>
-        <span class="value" id="turn"></span>
-      </div>
-    </header>
-
-    <main class="layout">
-      <section class="panel">
-        <h2 class="panel__title">Drawn Card</h2>
-        <article class="card" id="cardDisplay">
-          <h3 class="card__title">Awaiting draw…</h3>
-          <p class="card__description">Press "Draw &amp; Resolve" to begin the run.</p>
-        </article>
-      </section>
-
-      <section class="panel">
-        <h2 class="panel__title">Bet Selection</h2>
-        <div class="button-row" id="betButtons" aria-label="Bet amounts"></div>
-      </section>
-
-      <section class="panel">
-        <h2 class="panel__title">Actions</h2>
-        <div class="actions">
-          <button class="btn btn--primary" id="drawButton">Draw &amp; Resolve</button>
-          <button class="btn btn--secondary" id="restartButton">New Run</button>
+<body class="min-h-screen bg-midnight font-sans text-slate-100">
+  <div class="relative min-h-screen overflow-hidden">
+    <div class="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top,_rgba(91,212,255,0.12),_rgba(11,15,21,1))]"></div>
+    <div class="mx-auto flex max-w-6xl flex-col gap-8 px-4 py-10 sm:px-6 lg:px-8">
+      <header class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div class="rounded-2xl border border-[rgba(102,255,166,0.35)] bg-white/5 p-5 shadow-[0_20px_55px_rgba(102,255,166,0.25)] backdrop-blur-sm">
+          <span class="text-xs font-semibold uppercase tracking-[0.2em] text-success opacity-80">Bankroll</span>
+          <span class="mt-2 block text-2xl font-bold text-success" id="money"></span>
         </div>
-      </section>
+        <div class="rounded-2xl border border-slate-800/60 bg-white/5 p-5 shadow-[0_16px_40px_rgba(5,9,15,0.55)] backdrop-blur-sm">
+          <span class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Best</span>
+          <span class="mt-2 block text-xl font-semibold" id="bestScore"></span>
+        </div>
+        <div class="rounded-2xl border border-[rgba(91,212,255,0.35)] bg-white/5 p-5 shadow-[0_20px_55px_rgba(91,212,255,0.18)] backdrop-blur-sm">
+          <span class="text-xs font-semibold uppercase tracking-[0.2em] text-accent">Success Chance</span>
+          <span class="mt-2 block text-2xl font-bold text-accent" id="effectiveProbability"></span>
+        </div>
+        <div class="rounded-2xl border border-slate-800/60 bg-white/5 p-5 shadow-[0_16px_40px_rgba(5,9,15,0.55)] backdrop-blur-sm">
+          <span class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Base</span>
+          <span class="mt-2 block text-xl font-semibold" id="baseProbability"></span>
+        </div>
+        <div class="rounded-2xl border border-[rgba(91,212,255,0.35)] bg-white/5 p-5 shadow-[0_20px_55px_rgba(91,212,255,0.18)] backdrop-blur-sm">
+          <span class="text-xs font-semibold uppercase tracking-[0.2em] text-accent">Edge</span>
+          <span class="mt-2 block text-2xl font-bold text-accent" id="edge"></span>
+        </div>
+        <div class="rounded-2xl border border-slate-800/60 bg-white/5 p-5 shadow-[0_16px_40px_rgba(5,9,15,0.55)] backdrop-blur-sm">
+          <span class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Turn</span>
+          <span class="mt-2 block text-xl font-semibold" id="turn"></span>
+        </div>
+      </header>
 
-      <section class="panel">
-        <h2 class="panel__title">Result Ticker</h2>
-        <ul class="ticker" id="tickerList" aria-live="polite"></ul>
-      </section>
-    </main>
+      <main class="grid gap-6 lg:grid-cols-3">
+        <section class="panel col-span-3 rounded-3xl border border-slate-800/70 bg-white/5 p-6 shadow-[0_30px_70px_rgba(5,9,15,0.5)] backdrop-blur-sm">
+          <h2 class="text-sm font-semibold uppercase tracking-[0.3em] text-accent">Drawn Card</h2>
+          <article class="card mt-4 rounded-2xl border border-slate-800/80 bg-[#101520]/80 p-6 shadow-[0_20px_55px_rgba(5,9,15,0.55)] transition-all duration-200" id="cardDisplay">
+            <h3 class="card__title text-2xl font-semibold text-slate-100">Awaiting draw…</h3>
+            <p class="card__description mt-2 text-sm leading-6 text-slate-400">Press "Draw &amp; Resolve" to begin the run.</p>
+          </article>
+        </section>
+
+        <section class="panel col-span-3 rounded-3xl border border-slate-800/70 bg-white/5 p-6 shadow-[0_30px_70px_rgba(5,9,15,0.5)] backdrop-blur-sm">
+          <h2 class="text-sm font-semibold uppercase tracking-[0.3em] text-accent">Bet Selection</h2>
+          <div class="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4" id="betButtons" aria-label="Bet amounts"></div>
+        </section>
+
+        <section class="panel col-span-3 rounded-3xl border border-slate-800/70 bg-white/5 p-6 shadow-[0_30px_70px_rgba(5,9,15,0.5)] backdrop-blur-sm lg:col-span-2">
+          <h2 class="text-sm font-semibold uppercase tracking-[0.3em] text-accent">Actions</h2>
+          <div class="actions mt-4 flex flex-wrap gap-3">
+            <button
+              class="inline-flex items-center justify-center rounded-2xl border border-transparent bg-accent px-6 py-3 text-sm font-semibold text-midnight shadow-[0_20px_45px_rgba(91,212,255,0.35)] transition duration-200 hover:bg-[#73dcff] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#5bd4ff] disabled:cursor-not-allowed disabled:opacity-50"
+              id="drawButton"
+            >
+              Draw &amp; Resolve
+            </button>
+            <button
+              class="inline-flex items-center justify-center rounded-2xl border border-slate-800/70 bg-transparent px-6 py-3 text-sm font-semibold text-slate-200 transition duration-200 hover:border-accent hover:text-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#5bd4ff] disabled:cursor-not-allowed disabled:opacity-50"
+              id="restartButton"
+            >
+              New Run
+            </button>
+          </div>
+        </section>
+
+        <section class="panel col-span-3 rounded-3xl border border-slate-800/70 bg-white/5 p-6 shadow-[0_30px_70px_rgba(5,9,15,0.5)] backdrop-blur-sm lg:col-span-1">
+          <h2 class="text-sm font-semibold uppercase tracking-[0.3em] text-accent">Result Ticker</h2>
+          <ul class="mt-4 flex max-h-64 flex-col gap-3 overflow-y-auto pr-1" id="tickerList" aria-live="polite"></ul>
+        </section>
+      </main>
+    </div>
   </div>
 
-  <div class="modal" id="shopModal" role="dialog" aria-modal="true" aria-labelledby="shopTitle">
-    <div class="modal__backdrop" id="modalBackdrop"></div>
-    <div class="modal__content">
-      <h2 class="modal__title" id="shopTitle">Shop Offer</h2>
-      <p class="modal__body" id="shopDescription"></p>
-      <div class="modal__meta">
-        <span class="label">Price</span>
-        <span class="value" id="shopPrice"></span>
+  <div class="shop-modal fixed inset-0 z-20 hidden grid place-items-center bg-black/60 backdrop-blur" id="shopModal" role="dialog" aria-modal="true" aria-labelledby="shopTitle">
+    <div class="absolute inset-0" id="modalBackdrop"></div>
+    <div class="relative z-10 w-full max-w-md rounded-3xl border border-[rgba(91,212,255,0.35)] bg-[#0f1724]/95 p-8 shadow-[0_45px_85px_rgba(5,9,15,0.7)]">
+      <h2 class="text-lg font-semibold tracking-[0.2em] text-accent" id="shopTitle">Shop Offer</h2>
+      <p class="mt-4 text-sm leading-6 text-slate-200" id="shopDescription"></p>
+      <div class="mt-4 flex items-center justify-between rounded-2xl border border-[rgba(91,212,255,0.3)] bg-[rgba(91,212,255,0.12)] px-4 py-3 text-sm font-semibold text-accent">
+        <span>Price</span>
+        <span id="shopPrice"></span>
       </div>
-      <div class="modal__actions">
-        <button class="btn btn--primary" id="buyButton">Buy</button>
-        <button class="btn" id="skipShopButton">Skip</button>
+      <div class="mt-6 flex flex-wrap justify-end gap-3">
+        <button
+          class="inline-flex items-center justify-center rounded-2xl border border-transparent bg-accent px-5 py-3 text-sm font-semibold text-midnight shadow-[0_20px_45px_rgba(91,212,255,0.3)] transition duration-200 hover:bg-[#73dcff] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#5bd4ff] disabled:cursor-not-allowed disabled:opacity-50"
+          id="buyButton"
+        >
+          Buy
+        </button>
+        <button
+          class="inline-flex items-center justify-center rounded-2xl border border-slate-800/70 bg-transparent px-5 py-3 text-sm font-semibold text-slate-200 transition duration-200 hover:border-accent hover:text-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#5bd4ff]"
+          id="skipShopButton"
+        >
+          Skip
+        </button>
       </div>
     </div>
   </div>
