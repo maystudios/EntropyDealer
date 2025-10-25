@@ -1,5 +1,9 @@
 /* Zusatzstyles für Interaktionen und Animationen */
 
+:root {
+  --card-radius: 1.75rem;
+}
+
 .stat-card {
   border-radius: 1.5rem;
   border: 1px solid rgba(30, 41, 59, 0.7);
@@ -80,20 +84,6 @@
   font-size: 0.875rem;
 }
 
-.card.good {
-  border-color: rgba(102, 255, 166, 0.6);
-  box-shadow: 0 0 45px rgba(102, 255, 166, 0.35);
-}
-
-.card.bad {
-  border-color: rgba(255, 107, 107, 0.6);
-  box-shadow: 0 0 45px rgba(255, 107, 107, 0.35);
-}
-
-.card.neutral {
-  border-color: rgba(91, 212, 255, 0.4);
-}
-
 .card__status.win {
   color: rgb(102, 255, 166);
 }
@@ -101,3 +91,362 @@
 .card__status.lose {
   color: rgb(255, 107, 107);
 }
+
+.game-card {
+  --color1: rgba(91, 212, 255, 0.65);
+  --color2: rgba(167, 139, 250, 0.6);
+  --spark-opacity: 0.4;
+  --sheen-angle: 120deg;
+  --grad-x: 50%;
+  --grad-y: 50%;
+  --spark-x: 50%;
+  --spark-y: 50%;
+  --glare-x: 50%;
+  --glare-y: 50%;
+  --card-padding: 1.25rem;
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 63 / 88;
+  border-radius: var(--card-radius);
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  background:
+    radial-gradient(120% 140% at 28% 18%, rgba(91, 212, 255, 0.22), transparent 65%),
+    radial-gradient(115% 130% at 72% 82%, rgba(167, 139, 250, 0.2), transparent 60%),
+    linear-gradient(150deg, rgba(10, 16, 26, 0.95), rgba(10, 16, 26, 0.7));
+  box-shadow:
+    0 32px 70px rgba(5, 9, 15, 0.6),
+    0 0 0 1px rgba(148, 163, 184, 0.2);
+  overflow: hidden;
+  padding: 1px;
+  isolation: isolate;
+  transform-style: preserve-3d;
+  transform: perspective(900px) rotateX(0deg) rotateY(0deg);
+  transition: transform 0.45s ease, box-shadow 0.45s ease, filter 0.3s ease;
+  will-change: transform;
+  color: #f8fafc;
+}
+
+.game-card::before,
+.game-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  mix-blend-mode: color-dodge;
+  transition: opacity 0.3s ease, filter 0.3s ease;
+}
+
+.game-card::before {
+  background-image: linear-gradient(115deg, transparent 0%, var(--color1) 25%, transparent 47%, transparent 53%, var(--color2) 75%, transparent 100%);
+  background-size: 300% 300%;
+  background-position: var(--grad-x) var(--grad-y);
+  filter: brightness(0.6) contrast(1.15);
+  opacity: 0.55;
+  z-index: 1;
+}
+
+.game-card::after {
+  background-image:
+    url('https://assets.codepen.io/13471/sparkles.gif'),
+    url('https://assets.codepen.io/13471/holo.png'),
+    linear-gradient(125deg, rgba(255, 0, 132, 0.35) 15%, rgba(252, 164, 0, 0.28) 30%, rgba(255, 255, 0, 0.22) 40%, rgba(0, 255, 138, 0.2) 60%, rgba(0, 207, 255, 0.3) 70%, rgba(204, 76, 250, 0.35) 85%);
+  background-position: var(--spark-x) var(--spark-y), 50% 50%, 50% 50%;
+  background-size: 160%, 200%, 250%;
+  background-blend-mode: screen;
+  opacity: var(--spark-opacity);
+  filter: brightness(1) contrast(1.1);
+  z-index: 2;
+}
+
+.game-card[data-active='true'] {
+  box-shadow:
+    0 36px 80px rgba(5, 9, 15, 0.65),
+    0 0 0 1px rgba(148, 163, 184, 0.35),
+    0 28px 60px rgba(91, 212, 255, 0.18);
+}
+
+.game-card[data-active='false'] {
+  filter: saturate(0.75) brightness(0.92);
+  box-shadow:
+    0 22px 55px rgba(5, 9, 15, 0.5),
+    0 0 0 1px rgba(71, 85, 105, 0.4);
+}
+
+.game-card[data-active='false']::before,
+.game-card[data-active='false']::after,
+.game-card[data-active='false'] .card-sheen,
+.game-card[data-active='false'] .card-glare {
+  opacity: 0.35;
+}
+
+.game-card[data-context='drawn'] {
+  --card-padding: 1.4rem;
+}
+
+.game-card[data-context='deck'] {
+  --card-padding: 1rem;
+}
+
+.game-card[data-context='shop'] {
+  --card-padding: 1.15rem;
+}
+
+.game-card[data-rarity='C'] {
+  --color1: rgba(148, 163, 184, 0.55);
+  --color2: rgba(148, 163, 184, 0.4);
+}
+
+.game-card[data-rarity='U'] {
+  --color1: rgba(91, 212, 255, 0.75);
+  --color2: rgba(56, 189, 248, 0.6);
+}
+
+.game-card[data-rarity='R'] {
+  --color1: rgba(167, 139, 250, 0.85);
+  --color2: rgba(244, 114, 182, 0.65);
+}
+
+.game-card[data-rarity='E'] {
+  --color1: rgba(250, 204, 21, 0.9);
+  --color2: rgba(253, 186, 116, 0.65);
+}
+
+.game-card[data-active='true']::before,
+.game-card[data-active='true']::after {
+  opacity: 1;
+}
+
+.game-card:focus-visible {
+  outline: 2px solid rgba(91, 212, 255, 0.9);
+  outline-offset: 6px;
+}
+
+.card-sheen,
+.card-glare {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  transition: opacity 0.3s ease;
+  z-index: 3;
+}
+
+.card-sheen {
+  background: linear-gradient(var(--sheen-angle), transparent 25%, rgba(255, 255, 255, 0.55) 55%, transparent 75%);
+  background-size: 200% 200%;
+  background-position: var(--grad-x) var(--grad-y);
+  mix-blend-mode: screen;
+  opacity: 0.25;
+}
+
+.card-glare {
+  background: radial-gradient(circle at var(--glare-x) var(--glare-y), rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0) 55%);
+  opacity: 0.18;
+  mix-blend-mode: screen;
+}
+
+.card-inner {
+  position: relative;
+  z-index: 4;
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: var(--card-padding);
+  border-radius: calc(var(--card-radius) - 0.45rem);
+  background: linear-gradient(155deg, rgba(11, 16, 26, 0.9), rgba(14, 20, 30, 0.7));
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  text-align: left;
+}
+
+.game-card[data-active='true'] .card-inner {
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+.game-card.card-touch-shine::before {
+  animation: holoGradientFlash 0.6s ease-out;
+}
+
+.game-card.card-touch-shine::after {
+  animation: holoSparkleFlash 0.6s ease-out;
+}
+
+.game-card.card-touch-shine .card-sheen {
+  animation: sheenSweep 0.6s ease-out;
+}
+
+.game-card.card-touch-shine .card-glare {
+  animation: glarePulse 0.6s ease-out;
+}
+
+.game-card.animated {
+  animation: holoCard 12s ease 0s 1;
+}
+
+.game-card.animated::before {
+  animation: holoGradient 12s ease 0s 1;
+}
+
+.game-card.animated::after {
+  animation: holoSparkle 12s ease 0s 1;
+}
+
+@keyframes holoSparkle {
+  0%,
+  100% {
+    opacity: 0.75;
+    background-position: 50% 50%, 50% 50%, 50% 50%;
+    filter: brightness(1.2) contrast(1.25);
+  }
+  5%,
+  8% {
+    opacity: 1;
+    background-position: 40% 40%, 40% 40%, 45% 45%;
+    filter: brightness(0.8) contrast(1.2);
+  }
+  13%,
+  16% {
+    opacity: 0.5;
+    background-position: 50% 50%, 50% 50%, 50% 50%;
+    filter: brightness(1.2) contrast(0.8);
+  }
+  35%,
+  38% {
+    opacity: 1;
+    background-position: 60% 60%, 60% 60%, 55% 55%;
+    filter: brightness(1) contrast(1);
+  }
+  55% {
+    opacity: 0.33;
+    background-position: 45% 45%, 45% 45%, 45% 45%;
+    filter: brightness(1.2) contrast(1.25);
+  }
+}
+
+@keyframes holoGradient {
+  0%,
+  100% {
+    opacity: 0.5;
+    background-position: 50% 50%;
+    filter: brightness(0.5) contrast(1);
+  }
+  5%,
+  9% {
+    background-position: 100% 100%;
+    opacity: 1;
+    filter: brightness(0.75) contrast(1.25);
+  }
+  13%,
+  17% {
+    background-position: 0% 0%;
+    opacity: 0.88;
+  }
+  35%,
+  39% {
+    background-position: 100% 100%;
+    opacity: 1;
+    filter: brightness(0.5) contrast(1);
+  }
+  55% {
+    background-position: 0% 0%;
+    opacity: 1;
+    filter: brightness(0.75) contrast(1.25);
+  }
+}
+
+@keyframes holoCard {
+  0%,
+  100% {
+    transform: rotateZ(0deg) rotateX(0deg) rotateY(0deg);
+  }
+  5%,
+  8% {
+    transform: rotateZ(0deg) rotateX(6deg) rotateY(-20deg);
+  }
+  13%,
+  16% {
+    transform: rotateZ(0deg) rotateX(-9deg) rotateY(32deg);
+  }
+  35%,
+  38% {
+    transform: rotateZ(3deg) rotateX(12deg) rotateY(20deg);
+  }
+  55% {
+    transform: rotateZ(-3deg) rotateX(-12deg) rotateY(-27deg);
+  }
+}
+
+@keyframes holoGradientFlash {
+  0% {
+    opacity: 0.2;
+    filter: brightness(0.8) contrast(1.1);
+  }
+  50% {
+    opacity: 1;
+    filter: brightness(1.4) contrast(1.3);
+  }
+  100% {
+    opacity: 0.5;
+    filter: brightness(1) contrast(1.1);
+  }
+}
+
+@keyframes holoSparkleFlash {
+  0% {
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 0.85;
+  }
+  100% {
+    opacity: 0.4;
+  }
+}
+
+@keyframes sheenSweep {
+  0% {
+    background-position: -80% 40%;
+    opacity: 0.05;
+  }
+  50% {
+    background-position: 50% 50%;
+    opacity: 0.3;
+  }
+  100% {
+    background-position: 160% 60%;
+    opacity: 0.1;
+  }
+}
+
+@keyframes glarePulse {
+  0% {
+    opacity: 0.08;
+  }
+  50% {
+    opacity: 0.25;
+  }
+  100% {
+    opacity: 0.12;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .game-card {
+    transform: none !important;
+    transition: none !important;
+    animation: none !important;
+  }
+  .game-card::before,
+  .game-card::after,
+  .card-sheen,
+  .card-glare {
+    animation: none !important;
+    background-position: 50% 50% !important;
+    opacity: 0.25 !important;
+  }
+}
+
