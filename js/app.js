@@ -19,52 +19,193 @@
   const CARD_LIBRARY = {
     lightTilt: {
       id: 'lightTilt',
-      name: 'Leichte Neigung',
-      description: '⚙️ +5% Erfolg für 1 Runde',
-      rarity: 'good',
+      name: 'Lichtneigung',
+      description: '🌠 +6% Erfolg (1 Runde)',
       type: 'temp',
+      rarityTier: 'U',
+      icon: '🌠',
+      palette: 'aurora',
       apply(state) {
-        state.tempModifiers.probability += 0.05;
+        state.tempModifiers.probability += 0.06;
+        pushTickerMessage('Karte', 'Lichtneigung: Erfolg +6%.', 'info');
       },
     },
     coldLuck: {
       id: 'coldLuck',
       name: 'Kaltes Pech',
-      description: '⚠️ −5% Erfolg für 1 Runde',
-      rarity: 'bad',
+      description: '🧊 −6% Erfolg (1 Runde)',
       type: 'temp',
+      rarityTier: 'C',
+      icon: '🧊',
+      palette: 'frost',
       apply(state) {
-        state.tempModifiers.probability -= 0.05;
+        state.tempModifiers.probability -= 0.06;
+        pushTickerMessage('Karte', 'Kaltes Pech: Erfolg −6%.', 'warning');
       },
     },
     luckyBreak: {
       id: 'luckyBreak',
-      name: 'Glücksmoment',
+      name: 'Glückssprung',
       description: '✨ Hauskante −1% dauerhaft',
-      rarity: 'good',
       type: 'perm',
+      rarityTier: 'R',
+      icon: '✨',
+      palette: 'starlight',
       apply(state) {
         state.edge = Math.max(state.edge - 0.01, -0.5);
+        pushTickerMessage('Karte', 'Glückssprung: Hauskante sinkt um 1%.', 'info');
       },
     },
     riskyLever: {
       id: 'riskyLever',
       name: 'Riskanter Hebel',
-      description: '🎲 Einsatz ×1,5 (nur jetzt)',
-      rarity: 'neutral',
+      description: '🎲 Einsatz ×1,5 (1 Runde)',
       type: 'temp',
+      rarityTier: 'U',
+      icon: '🎲',
+      palette: 'ember',
       apply(state) {
         state.tempModifiers.betMultiplier *= 1.5;
+        pushTickerMessage('Karte', 'Riskanter Hebel: Einsatz ×1,5.', 'info');
       },
     },
     houseTurns: {
       id: 'houseTurns',
-      name: 'Haus dreht nach',
-      description: '🔥 Hauskante +1% dauerhaft',
-      rarity: 'bad',
+      name: 'Haus zieht an',
+      description: '💀 Hauskante +1,5% dauerhaft',
       type: 'perm',
+      rarityTier: 'R',
+      icon: '💀',
+      palette: 'void',
       apply(state) {
-        state.edge = Math.min(state.edge + 0.01, 0.5);
+        state.edge = Math.min(state.edge + 0.015, 0.5);
+        pushTickerMessage('Karte', 'Hauskante steigt um 1,5%.', 'warning');
+      },
+    },
+    focusSurge: {
+      id: 'focusSurge',
+      name: 'Fokus-Schub',
+      description: '⚡ +8% Erfolg & Einsatz ×1,3 (1 Runde)',
+      type: 'temp',
+      rarityTier: 'R',
+      icon: '⚡',
+      palette: 'aurora',
+      apply(state) {
+        state.tempModifiers.probability += 0.08;
+        state.tempModifiers.betMultiplier *= 1.3;
+        pushTickerMessage('Karte', 'Fokus-Schub: Erfolg +8%, Einsatz ×1,3.', 'info');
+      },
+    },
+    marketPulse: {
+      id: 'marketPulse',
+      name: 'Marktpuls',
+      description: '💹 Sofort +€35',
+      type: 'instant',
+      rarityTier: 'U',
+      icon: '💹',
+      palette: 'circuit',
+      apply(state) {
+        state.money += 35;
+        pushTickerMessage('Karte', 'Marktpuls zahlt €35 aus.', 'info');
+      },
+    },
+    glitchField: {
+      id: 'glitchField',
+      name: 'Glitch-Feld',
+      description: '🪙 Erfolg +12%, Einsatz halbiert (1 Runde)',
+      type: 'temp',
+      rarityTier: 'E',
+      icon: '🪙',
+      palette: 'starlight',
+      apply(state) {
+        state.tempModifiers.probability += 0.12;
+        state.tempModifiers.betMultiplier *= 0.5;
+        pushTickerMessage('Karte', 'Glitch-Feld: Erfolg +12%, Einsatz halbiert.', 'info');
+      },
+    },
+    entropyTax: {
+      id: 'entropyTax',
+      name: 'Entropie-Steuer',
+      description: '🧾 Sofort −€30',
+      type: 'instant',
+      rarityTier: 'U',
+      icon: '🧾',
+      palette: 'void',
+      apply(state) {
+        state.money = Math.max(0, state.money - 30);
+        pushTickerMessage('Karte', 'Entropie kassiert €30.', 'warning');
+      },
+    },
+    probabilityCrash: {
+      id: 'probabilityCrash',
+      name: 'Wahrscheinlichkeitseinbruch',
+      description: '📉 −8% Erfolg (1 Runde)',
+      type: 'temp',
+      rarityTier: 'C',
+      icon: '📉',
+      palette: 'frost',
+      apply(state) {
+        state.tempModifiers.probability -= 0.08;
+        pushTickerMessage('Karte', 'Wahrscheinlichkeitseinbruch: −8% Erfolg.', 'warning');
+      },
+    },
+    luckyStreak: {
+      id: 'luckyStreak',
+      name: 'Streiflicht',
+      description: '🌈 Einsatz ×1,4 & +6% Erfolg (1 Runde)',
+      type: 'temp',
+      rarityTier: 'R',
+      icon: '🌈',
+      palette: 'aurora',
+      apply(state) {
+        state.tempModifiers.betMultiplier *= 1.4;
+        state.tempModifiers.probability += 0.06;
+        pushTickerMessage('Karte', 'Streiflicht: Einsatz ×1,4 & Erfolg +6%.', 'info');
+      },
+    },
+    voidAnchor: {
+      id: 'voidAnchor',
+      name: 'Leerenanker',
+      description: '🪨 Basis-Erfolg −2% dauerhaft',
+      type: 'perm',
+      rarityTier: 'R',
+      icon: '🪨',
+      palette: 'void',
+      apply(state) {
+        state.baseProbability = Utils.clamp(state.baseProbability - 0.02, MIN_PROB, MAX_PROB);
+        pushTickerMessage('Karte', 'Leerenanker senkt den Basis-Erfolg um 2%.', 'warning');
+      },
+    },
+    edgePolish: {
+      id: 'edgePolish',
+      name: 'Kantenpolitur',
+      description: '🪓 Hauskante −1,5% dauerhaft',
+      type: 'perm',
+      rarityTier: 'R',
+      icon: '🪓',
+      palette: 'circuit',
+      apply(state) {
+        state.edge = Math.max(state.edge - 0.015, -0.5);
+        pushTickerMessage('Karte', 'Kantenpolitur: Hauskante sinkt um 1,5%.', 'info');
+      },
+    },
+    quantumCopy: {
+      id: 'quantumCopy',
+      name: 'Quanten-Kopie',
+      description: '🃏 Kopiert die letzte Ablagekarte ins Deck',
+      type: 'instant',
+      rarityTier: 'E',
+      icon: '🃏',
+      palette: 'starlight',
+      apply(state) {
+        if (state.discard.length) {
+          const source = state.discard[state.discard.length - 1];
+          state.deck.push({ ...source });
+          state.deck = Utils.shuffle(state.deck);
+          pushTickerMessage('Karte', `„${source.name}“ wird dupliziert.`, 'info');
+        } else {
+          pushTickerMessage('Karte', 'Keine Karte zum Kopieren.', 'warning');
+        }
       },
     },
   };
@@ -75,6 +216,9 @@
       name: 'Kante feilen',
       description: 'Hauskante −2%.',
       price: 200,
+      rarityTier: 'R',
+      icon: '🛠️',
+      palette: 'circuit',
       apply(state) {
         state.edge = Math.max(state.edge - 0.02, -0.5);
         pushTickerMessage('Shop', 'Hauskante sinkt um 2%.', 'info');
@@ -85,6 +229,9 @@
       name: 'Instinkt trainieren',
       description: 'Basis-Erfolg +2%.',
       price: 180,
+      rarityTier: 'U',
+      icon: '📈',
+      palette: 'aurora',
       apply(state) {
         state.baseProbability = Utils.clamp(state.baseProbability + 0.02, 0.05, 0.95);
         pushTickerMessage('Shop', 'Basis-Erfolg steigt um 2%.', 'info');
@@ -95,19 +242,65 @@
       name: 'Verbannung: Kaltes Pech',
       description: 'Entfernt „Kaltes Pech“ aus dem Deck.',
       price: 150,
-      apply(state) {
-        removeCardFromDeck('coldLuck');
+      rarityTier: 'E',
+      icon: '🧊',
+      palette: 'frost',
+      apply() {
+        removeCardFromDeck('coldLuck', 'Kaltes Pech');
       },
     },
     {
-      id: 'addLightTilt',
-      name: 'Neue Karte: Leichte Neigung',
-      description: 'Fügt „Leichte Neigung“ hinzu.',
-      price: 120,
+      id: 'banishVoidAnchor',
+      name: 'Anker lösen',
+      description: 'Entfernt „Leerenanker“ aus Deck oder Ablage.',
+      price: 220,
+      rarityTier: 'E',
+      icon: '⚓',
+      palette: 'void',
+      apply() {
+        removeCardFromDeck('voidAnchor', 'Leerenanker');
+      },
+    },
+    {
+      id: 'addFocusSurge',
+      name: 'Neue Karte: Fokus-Schub',
+      description: 'Fügt „Fokus-Schub“ hinzu.',
+      price: 230,
+      rarityTier: 'R',
+      icon: '⚡',
+      palette: 'aurora',
       apply(state) {
-        state.deck.push({ ...CARD_LIBRARY.lightTilt });
+        state.deck.push({ ...CARD_LIBRARY.focusSurge });
         state.deck = Utils.shuffle(state.deck);
-        pushTickerMessage('Shop', 'Neue „Leichte Neigung“ im Deck.', 'info');
+        pushTickerMessage('Shop', '„Fokus-Schub“ betritt dein Deck.', 'info');
+      },
+    },
+    {
+      id: 'addEdgePolish',
+      name: 'Neue Karte: Kantenpolitur',
+      description: 'Fügt „Kantenpolitur“ hinzu.',
+      price: 210,
+      rarityTier: 'R',
+      icon: '🪓',
+      palette: 'circuit',
+      apply(state) {
+        state.deck.push({ ...CARD_LIBRARY.edgePolish });
+        state.deck = Utils.shuffle(state.deck);
+        pushTickerMessage('Shop', '„Kantenpolitur“ veredelt dein Deck.', 'info');
+      },
+    },
+    {
+      id: 'addLuckyStreak',
+      name: 'Neue Karte: Streiflicht',
+      description: 'Fügt „Streiflicht“ hinzu.',
+      price: 160,
+      rarityTier: 'R',
+      icon: '🌈',
+      palette: 'aurora',
+      apply(state) {
+        state.deck.push({ ...CARD_LIBRARY.luckyStreak });
+        state.deck = Utils.shuffle(state.deck);
+        pushTickerMessage('Shop', '„Streiflicht“ glitzert in deinem Deck.', 'info');
       },
     },
     {
@@ -115,6 +308,9 @@
       name: 'Einsatz-Stufe freischalten',
       description: 'Neuer Einsatz (+50% Maximum).',
       price: 100,
+      rarityTier: 'C',
+      icon: '💱',
+      palette: 'circuit',
       apply(state) {
         const currentMax = Math.max(...state.betOptions);
         const newLevel = Math.round(currentMax * 1.5);
@@ -159,8 +355,10 @@
     roundProgress: document.getElementById('roundProgress'),
     currentBet: document.getElementById('currentBet'),
     cardDisplay: document.getElementById('cardDisplay'),
+    cardElement: document.querySelector('#cardDisplay .game-card'),
     cardRarity: document.getElementById('cardRarity'),
     cardType: document.getElementById('cardType'),
+    cardIcon: document.getElementById('cardIcon'),
     cardStatus: document.querySelector('#cardDisplay .card__status'),
     betButtons: document.getElementById('betButtons'),
     drawButton: document.getElementById('drawButton'),
@@ -179,6 +377,7 @@
     shopTab: document.getElementById('shopTab'),
     shopCountdown: document.getElementById('shopCountdown'),
     shopHints: document.getElementById('shopHints'),
+    shopCardPreview: document.getElementById('shopCardPreview'),
     tabButtons: document.querySelectorAll('.tab-button'),
     tutorialOverlay: document.getElementById('tutorialOverlay'),
     tutorialText: document.getElementById('tutorialText'),
@@ -186,7 +385,190 @@
     summaryModal: document.getElementById('summaryModal'),
     summaryMessage: document.getElementById('summaryMessage'),
     summaryRestart: document.getElementById('summaryRestart'),
+    shopModalCard: document.getElementById('shopModalCard'),
   };
+
+  const CardEffects = (() => {
+    const registered = new WeakSet();
+    const pointer = { x: 0.5, y: 0.5 };
+    let activeCard = null;
+    let frame = null;
+    let lastFrame = 0;
+    const MAX_TILT = 8;
+    const reduceMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let prefersReducedMotion = reduceMotionQuery.matches;
+
+    const supportsHoverQuery = window.matchMedia('(hover: none)');
+
+    const schedule = (card) => {
+      if (prefersReducedMotion || card.dataset.active !== 'true') return;
+      activeCard = card;
+      if (!frame) {
+        frame = requestAnimationFrame(update);
+      }
+    };
+
+    const resetCard = (card) => {
+      if (!card) return;
+      card.style.transition = prefersReducedMotion ? '' : 'transform 0.35s ease';
+      card.style.transform = 'perspective(900px) rotateX(0deg) rotateY(0deg)';
+      card.style.setProperty('--pointer-x', '50%');
+      card.style.setProperty('--pointer-y', '50%');
+      card.style.setProperty('--sheen-x', '50%');
+      card.style.setProperty('--sheen-y', '50%');
+      card.style.setProperty('--holo-pos-x', '50%');
+      card.style.setProperty('--holo-pos-y', '50%');
+      card.style.setProperty('--holo-rotation', '45deg');
+      card.style.setProperty('--sheen-angle', '118deg');
+      if (!prefersReducedMotion) {
+        setTimeout(() => {
+          if (card.isConnected) {
+            card.style.transition = '';
+          }
+        }, 350);
+      }
+    };
+
+    const update = (now) => {
+      if (!activeCard || prefersReducedMotion) {
+        frame = null;
+        return;
+      }
+      if (now - lastFrame < 33) {
+        frame = requestAnimationFrame(update);
+        return;
+      }
+      lastFrame = now;
+      const rotX = (0.5 - pointer.y) * MAX_TILT * 2;
+      const rotY = (pointer.x - 0.5) * MAX_TILT * 2;
+      activeCard.style.transform = `perspective(900px) rotateX(${rotX.toFixed(2)}deg) rotateY(${rotY.toFixed(2)}deg)`;
+      activeCard.style.setProperty('--pointer-x', `${(pointer.x * 100).toFixed(2)}%`);
+      activeCard.style.setProperty('--pointer-y', `${(pointer.y * 100).toFixed(2)}%`);
+      const sheenX = 50 + (pointer.x - 0.5) * 60;
+      const sheenY = 50 + (pointer.y - 0.5) * 40;
+      activeCard.style.setProperty('--sheen-x', `${sheenX.toFixed(2)}%`);
+      activeCard.style.setProperty('--sheen-y', `${sheenY.toFixed(2)}%`);
+      const holoX = 50 + (pointer.x - 0.5) * 36;
+      const holoY = 50 + (pointer.y - 0.5) * 32;
+      activeCard.style.setProperty('--holo-pos-x', `${holoX.toFixed(2)}%`);
+      activeCard.style.setProperty('--holo-pos-y', `${holoY.toFixed(2)}%`);
+      const holoRotation = 45 + (pointer.x - 0.5) * 60 - (pointer.y - 0.5) * 40;
+      activeCard.style.setProperty('--holo-rotation', `${holoRotation.toFixed(2)}deg`);
+      const sheenAngle = 118 + (pointer.x - 0.5) * 35 - (pointer.y - 0.5) * 28;
+      activeCard.style.setProperty('--sheen-angle', `${sheenAngle.toFixed(2)}deg`);
+      frame = null;
+    };
+
+    const triggerShine = (card) => {
+      if (!card || prefersReducedMotion) return;
+      card.classList.remove('card-shine');
+      void card.offsetWidth;
+      card.classList.add('card-shine');
+      setTimeout(() => {
+        card.classList.remove('card-shine');
+      }, 620);
+    };
+
+    const handleEnter = (event) => {
+      const card = event.currentTarget;
+      if (!card || card.dataset.active !== 'true' || prefersReducedMotion) return;
+      if (event.pointerType && event.pointerType !== 'mouse' && event.pointerType !== 'pen') return;
+      pointer.x = 0.5;
+      pointer.y = 0.5;
+      card.style.transition = 'transform 0.12s ease-out';
+      schedule(card);
+    };
+
+    const handleMove = (event) => {
+      const card = event.currentTarget;
+      if (!card || card.dataset.active !== 'true' || prefersReducedMotion) return;
+      if (event.pointerType && event.pointerType !== 'mouse' && event.pointerType !== 'pen') return;
+      const rect = card.getBoundingClientRect();
+      pointer.x = Math.min(Math.max((event.clientX - rect.left) / rect.width, 0), 1);
+      pointer.y = Math.min(Math.max((event.clientY - rect.top) / rect.height, 0), 1);
+      card.style.transition = '';
+      schedule(card);
+    };
+
+    const handleLeave = (event) => {
+      const card = event.currentTarget;
+      if (frame) {
+        cancelAnimationFrame(frame);
+        frame = null;
+      }
+      if (activeCard === card) {
+        activeCard = null;
+      }
+      resetCard(card);
+    };
+
+    const handlePointerDown = (event) => {
+      const card = event.currentTarget;
+      if (!card || card.dataset.active !== 'true' || prefersReducedMotion) return;
+      if (event.pointerType && event.pointerType === 'mouse') {
+        if (supportsHoverQuery.matches) {
+          triggerShine(card);
+        }
+        return;
+      }
+      triggerShine(card);
+    };
+
+    const register = (card) => {
+      if (!card || registered.has(card)) return;
+      registered.add(card);
+      resetCard(card);
+      card.addEventListener('pointerenter', handleEnter);
+      card.addEventListener('pointermove', handleMove);
+      card.addEventListener('pointerleave', handleLeave);
+      card.addEventListener('pointerdown', handlePointerDown);
+      card.addEventListener('touchstart', handlePointerDown, { passive: true });
+    };
+
+    if (reduceMotionQuery.addEventListener) {
+      reduceMotionQuery.addEventListener('change', (event) => {
+        prefersReducedMotion = event.matches;
+        if (prefersReducedMotion && activeCard) {
+          resetCard(activeCard);
+          activeCard = null;
+        }
+      });
+    } else if (reduceMotionQuery.addListener) {
+      reduceMotionQuery.addListener((event) => {
+        prefersReducedMotion = event.matches;
+        if (prefersReducedMotion && activeCard) {
+          resetCard(activeCard);
+          activeCard = null;
+        }
+      });
+    }
+
+    const refresh = (root = document) => {
+      root.querySelectorAll('.game-card').forEach(register);
+    };
+
+    const deactivate = (card) => {
+      if (!card) return;
+      if (frame && activeCard === card) {
+        cancelAnimationFrame(frame);
+        frame = null;
+      }
+      if (activeCard === card) {
+        activeCard = null;
+      }
+      resetCard(card);
+    };
+
+    return { refresh, deactivate };
+  })();
+
+  function setDisplayCardActive(active) {
+    if (!elements.cardElement) return;
+    elements.cardElement.dataset.active = active ? 'true' : 'false';
+    if (!active) {
+      CardEffects.deactivate(elements.cardElement);
+    }
+  }
 
   const BET_BUTTON_BASE_CLASSES =
     'w-full rounded-2xl border border-slate-800/70 bg-slate-900/60 px-4 py-3 text-base font-semibold text-slate-200 transition-all duration-200 hover:border-[#5bd4ff] hover:bg-slate-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#5bd4ff] disabled:cursor-not-allowed disabled:opacity-60';
@@ -237,6 +619,151 @@
     '💡 Entferne Risiko-Karten früh, um stabile Versuche zu sichern.',
     '💰 Shop erscheint alle 5 Züge – plane deinen Einsatz rechtzeitig.',
   ];
+
+  const RARITY_LABELS = {
+    C: 'Gewöhnlich',
+    U: 'Ungewöhnlich',
+    R: 'Selten',
+    E: 'Episch',
+  };
+
+  const TYPE_LABELS = {
+    temp: '1 Runde',
+    perm: 'Dauerhaft',
+    instant: 'Sofort',
+  };
+
+  const RARITY_TIER_BY_TYPE = {
+    good: 'R',
+    bad: 'C',
+    neutral: 'U',
+  };
+
+  const DEFAULT_CARD_ICON = '🎴';
+
+  function getRarityTier(card) {
+    if (!card) return 'C';
+    if (card.rarityTier) return card.rarityTier;
+    if (card.rarity && RARITY_TIER_BY_TYPE[card.rarity]) {
+      return RARITY_TIER_BY_TYPE[card.rarity];
+    }
+    return 'C';
+  }
+
+  function getRarityLabel(tier) {
+    return RARITY_LABELS[tier] || RARITY_LABELS.C;
+  }
+
+  function getTypeLabel(type) {
+    return TYPE_LABELS[type] || TYPE_LABELS.temp;
+  }
+
+  function getCardIcon(card) {
+    return (card && card.icon) || DEFAULT_CARD_ICON;
+  }
+
+  function formatCardDataFromCard(card, overrides = {}) {
+    const rarityTier = overrides.rarityTier || getRarityTier(card);
+    return {
+      title: overrides.title || card.name,
+      description: overrides.description || card.description,
+      icon: overrides.icon || getCardIcon(card),
+      typeLabel: overrides.typeLabel || getTypeLabel(card.type),
+      rarityTier,
+      palette: overrides.palette || card.palette,
+      ariaLabel:
+        overrides.ariaLabel || `${overrides.title || card.name}: ${overrides.description || card.description}`,
+    };
+  }
+
+  function createCardShell({ context, active, rarityTier, ariaLabel, size, palette }) {
+    const card = document.createElement('div');
+    card.className = 'game-card';
+    card.dataset.context = context;
+    card.dataset.active = active ? 'true' : 'false';
+    card.dataset.rarity = rarityTier;
+    if (size) {
+      card.dataset.size = size;
+    }
+    if (palette) {
+      card.dataset.palette = palette;
+    }
+    card.setAttribute('aria-label', ariaLabel);
+    card.tabIndex = 0;
+
+    const sheen = document.createElement('div');
+    sheen.className = 'card-sheen';
+    const glare = document.createElement('div');
+    glare.className = 'card-glare';
+    const inner = document.createElement('div');
+    inner.className = 'card-inner';
+
+    card.append(sheen, glare, inner);
+    return { card, inner };
+  }
+
+  function createGameCardView(data, options = {}) {
+    const { context = 'deck', active = false, size = 'compact', footer, palette } = options;
+    const rarityTier = data.rarityTier || 'C';
+    const ariaLabel = data.ariaLabel || `${data.title}: ${data.description}`;
+    const { card, inner } = createCardShell({
+      context,
+      active,
+      rarityTier,
+      ariaLabel,
+      size,
+      palette: palette || data.palette,
+    });
+
+    const header = document.createElement('div');
+    header.className =
+      'flex items-center justify-between text-[0.6rem] font-semibold uppercase tracking-[0.3em] text-slate-300';
+    header.innerHTML = `<span>${getRarityLabel(rarityTier)}</span><span>${data.typeLabel || ''}</span>`;
+
+    const body = document.createElement('div');
+    body.className = 'flex items-start gap-3';
+
+    const icon = document.createElement('span');
+    icon.className = size === 'large' ? 'card-icon text-3xl' : 'card-icon text-2xl';
+    icon.textContent = data.icon || DEFAULT_CARD_ICON;
+
+    const textWrap = document.createElement('div');
+    textWrap.className = 'space-y-1';
+
+    const title = document.createElement('h3');
+    if (size === 'large') {
+      title.className = 'text-2xl font-semibold text-slate-100';
+    } else if (size === 'regular') {
+      title.className = 'text-lg font-semibold text-slate-100';
+    } else {
+      title.className = 'text-base font-semibold text-slate-100';
+    }
+    title.textContent = data.title;
+
+    const description = document.createElement('p');
+    if (size === 'large') {
+      description.className = 'text-sm leading-6 text-slate-300';
+    } else if (size === 'regular') {
+      description.className = 'text-sm leading-6 text-slate-300';
+    } else {
+      description.className = 'text-xs leading-5 text-slate-300';
+    }
+    description.textContent = data.description;
+
+    textWrap.append(title, description);
+    body.append(icon, textWrap);
+
+    inner.append(header, body);
+
+    if (footer) {
+      const footerEl = document.createElement('p');
+      footerEl.className = 'text-[0.65rem] font-semibold uppercase tracking-[0.28em] text-slate-400';
+      footerEl.textContent = footer;
+      inner.append(footerEl);
+    }
+
+    return card;
+  }
 
   function animateValue(element) {
     if (!element) return;
@@ -293,31 +820,37 @@
 
   function renderDeckList() {
     if (!elements.deckList) return;
-    const counts = new Map();
-    [...state.deck, ...state.discard].forEach((card) => {
-      const key = card.id;
-      const entry = counts.get(key) || { card, amount: 0 };
-      entry.amount += 1;
-      counts.set(key, entry);
-    });
     elements.deckList.innerHTML = '';
-    if (!counts.size) {
+    if (!state.deck.length) {
       const li = document.createElement('li');
       li.className = 'rounded-2xl border border-slate-800/70 bg-slate-900/50 px-4 py-3 text-sm text-slate-400';
-      li.textContent = 'Deck lädt…';
+      li.textContent = state.discard.length ? 'Deck wird gemischt…' : 'Deck leer – Shop oder Gewinn abwarten.';
       elements.deckList.appendChild(li);
       return;
     }
-    [...counts.values()]
-      .sort((a, b) => a.card.name.localeCompare(b.card.name))
-      .forEach(({ card, amount }) => {
-        const li = document.createElement('li');
-        li.className = 'flex items-start justify-between gap-3 rounded-2xl border border-slate-800/60 bg-slate-900/60 px-4 py-3';
-        const text = document.createElement('div');
-        text.innerHTML = `<p class="text-sm font-semibold text-slate-100">${amount}× ${card.name}</p><p class="text-xs text-slate-300">${card.description}</p>`;
-        li.appendChild(text);
-        elements.deckList.appendChild(li);
+
+    const allowDeckTilt = state.runActive && !shopLocked && !state.activeCard;
+
+    state.deck.forEach((card, index) => {
+      const li = document.createElement('li');
+      li.className = 'flex';
+      const isTopCard = index === 0;
+      const data = formatCardDataFromCard(card, {
+        ariaLabel: `${card.name}: ${card.description}. ${isTopCard ? 'Oberste Karte im Deck.' : `Position ${index + 1} im Deck.`}`,
       });
+      const cardEl = createGameCardView(data, {
+        context: 'deck',
+        active: isTopCard && allowDeckTilt,
+        size: 'compact',
+        footer: isTopCard
+          ? `${allowDeckTilt ? 'Bereit' : 'Wartet'} · ${data.typeLabel}`
+          : data.typeLabel,
+      });
+      li.appendChild(cardEl);
+      elements.deckList.appendChild(li);
+    });
+
+    CardEffects.refresh(elements.deckList);
   }
 
   function updateShopCountdown() {
@@ -434,6 +967,63 @@
       elements.shopHints.appendChild(li);
     });
   }
+
+  function renderShopCardTargets(offer) {
+    if (elements.shopCardPreview) {
+      elements.shopCardPreview.innerHTML = '';
+    }
+    if (elements.shopModalCard) {
+      elements.shopModalCard.innerHTML = '';
+    }
+
+    if (!offer) {
+      if (elements.shopCardPreview) {
+        const placeholder = document.createElement('p');
+        placeholder.className = 'text-sm text-slate-500';
+        placeholder.textContent = 'Kein Angebot aktiv.';
+        elements.shopCardPreview.appendChild(placeholder);
+      }
+      return;
+    }
+
+    const cardData = {
+      title: offer.name,
+      description: offer.description,
+      icon: offer.icon || '🛒',
+      typeLabel: 'Shop',
+      rarityTier: offer.rarityTier || 'U',
+      ariaLabel: `${offer.name}: ${offer.description}. Preis €${offer.price}.`,
+      palette: offer.palette || 'shop',
+    };
+
+    if (elements.shopCardPreview) {
+      const previewCard = createGameCardView(cardData, {
+        context: 'shop',
+        active: false,
+        size: 'compact',
+        footer: `€${offer.price}`,
+        palette: cardData.palette,
+      });
+      elements.shopCardPreview.appendChild(previewCard);
+      CardEffects.refresh(elements.shopCardPreview);
+    }
+
+    if (elements.shopModalCard) {
+      const modalCard = createGameCardView(cardData, {
+        context: 'shop',
+        active: true,
+        size: 'regular',
+        footer: `€${offer.price}`,
+        palette: cardData.palette,
+      });
+      elements.shopModalCard.appendChild(modalCard);
+      CardEffects.refresh(elements.shopModalCard);
+    }
+  }
+
+  function clearShopCards() {
+    renderShopCardTargets(null);
+  }
   const BUY_BUTTON_ACCENT_CLASSES = [
     'bg-accent',
     'hover:bg-[#73dcff]',
@@ -473,14 +1063,20 @@
     cards.push(
       { ...CARD_LIBRARY.lightTilt },
       { ...CARD_LIBRARY.lightTilt },
-      { ...CARD_LIBRARY.lightTilt },
+      { ...CARD_LIBRARY.focusSurge },
+      { ...CARD_LIBRARY.riskyLever },
+      { ...CARD_LIBRARY.riskyLever },
       { ...CARD_LIBRARY.coldLuck },
       { ...CARD_LIBRARY.coldLuck },
-      { ...CARD_LIBRARY.coldLuck },
+      { ...CARD_LIBRARY.probabilityCrash },
+      { ...CARD_LIBRARY.glitchField },
       { ...CARD_LIBRARY.luckyBreak },
-      { ...CARD_LIBRARY.riskyLever },
-      { ...CARD_LIBRARY.riskyLever },
       { ...CARD_LIBRARY.houseTurns },
+      { ...CARD_LIBRARY.entropyTax },
+      { ...CARD_LIBRARY.marketPulse },
+      { ...CARD_LIBRARY.luckyStreak },
+      { ...CARD_LIBRARY.voidAnchor },
+      { ...CARD_LIBRARY.quantumCopy },
     );
     return Utils.shuffle(cards);
   }
@@ -506,6 +1102,7 @@
     renderStats();
     clearTicker();
     renderDeckList();
+    clearShopCards();
     updateShopCountdown();
     updateActionButton();
     if (elements.summaryModal) {
@@ -622,31 +1219,44 @@
   }
 
   function updateCardDisplay(card) {
-    if (!elements.cardDisplay) return;
+    if (!elements.cardElement || !elements.cardDisplay) return;
     const title = elements.cardDisplay.querySelector('.card__title');
     const description = elements.cardDisplay.querySelector('.card__description');
     const status = elements.cardStatus;
-    elements.cardDisplay.classList.remove('good', 'bad', 'neutral');
+    const rarity = elements.cardRarity;
+    const type = elements.cardType;
+    const icon = elements.cardIcon;
+
+    setDisplayCardActive(false);
 
     if (!card) {
-      if (elements.cardRarity) elements.cardRarity.textContent = '---';
-      if (elements.cardType) elements.cardType.textContent = '---';
+      elements.cardElement.dataset.rarity = 'C';
+      delete elements.cardElement.dataset.palette;
+      elements.cardElement.setAttribute('aria-label', 'Keine Karte ausgewählt');
+      if (rarity) rarity.textContent = '---';
+      if (type) type.textContent = '---';
+      if (icon) icon.textContent = DEFAULT_CARD_ICON;
       if (title) title.textContent = 'Zieh eine Karte…';
       if (description) description.textContent = 'Tippe auf „Karte ziehen & wetten“, um loszulegen.';
       if (status) {
         status.textContent = 'Ergebnis erscheint nach Flip.';
         status.classList.remove('win', 'lose');
       }
+      CardEffects.refresh(elements.cardDisplay);
       return;
     }
 
-    if (elements.cardRarity) {
-      const label = card.rarity === 'good' ? 'Gut' : card.rarity === 'bad' ? 'Riskant' : 'Neutral';
-      elements.cardRarity.textContent = label;
+    const rarityTier = getRarityTier(card);
+    elements.cardElement.dataset.rarity = rarityTier;
+    if (card.palette) {
+      elements.cardElement.dataset.palette = card.palette;
+    } else {
+      delete elements.cardElement.dataset.palette;
     }
-    if (elements.cardType) {
-      elements.cardType.textContent = card.type === 'perm' ? 'Dauerhaft' : '1 Runde';
-    }
+    elements.cardElement.setAttribute('aria-label', `${card.name}: ${card.description}`);
+    if (rarity) rarity.textContent = getRarityLabel(rarityTier);
+    if (type) type.textContent = getTypeLabel(card.type);
+    if (icon) icon.textContent = getCardIcon(card);
     if (title) title.textContent = card.name;
     if (description) description.textContent = card.description;
     if (status) {
@@ -654,13 +1264,7 @@
       status.classList.remove('win', 'lose');
     }
 
-    if (card.rarity === 'good') {
-      elements.cardDisplay.classList.add('good');
-    } else if (card.rarity === 'bad') {
-      elements.cardDisplay.classList.add('bad');
-    } else {
-      elements.cardDisplay.classList.add('neutral');
-    }
+    CardEffects.refresh(elements.cardDisplay);
   }
 
   function clearTicker() {
@@ -717,6 +1321,8 @@
     state.tempModifiers = createTempModifiers();
     state.awaitingFlip = false;
     state.activeCard = null;
+    setDisplayCardActive(false);
+    renderDeckList();
     renderStats();
     renderBetButtons();
 
@@ -761,6 +1367,7 @@
     if (!offer) return;
     elements.shopDescription.textContent = `${offer.name}: ${offer.description}`;
     elements.shopPrice.textContent = `€${offer.price}`;
+    renderShopCardTargets(offer);
     elements.shopModal.classList.remove('hidden');
     const canAfford = state.money >= offer.price;
     elements.buyButton.disabled = !canAfford;
@@ -773,6 +1380,7 @@
 
   function closeShopModal() {
     elements.shopModal.classList.add('hidden');
+    clearShopCards();
     state.currentShopItem = null;
     shopLocked = false;
     updateActionButton();
@@ -780,7 +1388,7 @@
     updateShopCountdown();
   }
 
-  function removeCardFromDeck(cardId) {
+  function removeCardFromDeck(cardId, displayName) {
     const removeFrom = (collection) => {
       const index = collection.findIndex((card) => card.id === cardId);
       if (index >= 0) {
@@ -790,11 +1398,13 @@
       return false;
     };
 
+    const label = displayName || cardId;
+
     if (removeFrom(state.deck) || removeFrom(state.discard)) {
-      pushTickerMessage('Shop', '„Kaltes Pech“ entfernt.', 'info');
+      pushTickerMessage('Shop', `„${label}“ entfernt.`, 'info');
       renderDeckList();
     } else {
-      pushTickerMessage('Shop', 'Keine „Kaltes Pech“-Karte gefunden.', 'warning');
+      pushTickerMessage('Shop', `Keine „${label}“-Karte gefunden.`, 'warning');
     }
   }
 
@@ -859,6 +1469,7 @@
       const card = drawCard();
       if (!card) return;
       state.awaitingFlip = true;
+      setDisplayCardActive(true);
       renderBetButtons();
       renderStats();
       updateActionButton();
