@@ -19,62 +19,193 @@
   const CARD_LIBRARY = {
     lightTilt: {
       id: 'lightTilt',
-      name: 'Leichte Neigung',
-      description: '⚙️ +5% Erfolg für 1 Runde',
-      rarity: 'good',
+      name: 'Lichtneigung',
+      description: '🌠 +6% Erfolg (1 Runde)',
       type: 'temp',
       rarityTier: 'U',
-      icon: '🎯',
+      icon: '🌠',
+      palette: 'aurora',
       apply(state) {
-        state.tempModifiers.probability += 0.05;
+        state.tempModifiers.probability += 0.06;
+        pushTickerMessage('Karte', 'Lichtneigung: Erfolg +6%.', 'info');
       },
     },
     coldLuck: {
       id: 'coldLuck',
       name: 'Kaltes Pech',
-      description: '⚠️ −5% Erfolg für 1 Runde',
-      rarity: 'bad',
+      description: '🧊 −6% Erfolg (1 Runde)',
       type: 'temp',
       rarityTier: 'C',
       icon: '🧊',
+      palette: 'frost',
       apply(state) {
-        state.tempModifiers.probability -= 0.05;
+        state.tempModifiers.probability -= 0.06;
+        pushTickerMessage('Karte', 'Kaltes Pech: Erfolg −6%.', 'warning');
       },
     },
     luckyBreak: {
       id: 'luckyBreak',
-      name: 'Glücksmoment',
+      name: 'Glückssprung',
       description: '✨ Hauskante −1% dauerhaft',
-      rarity: 'good',
       type: 'perm',
-      rarityTier: 'E',
+      rarityTier: 'R',
       icon: '✨',
+      palette: 'starlight',
       apply(state) {
         state.edge = Math.max(state.edge - 0.01, -0.5);
+        pushTickerMessage('Karte', 'Glückssprung: Hauskante sinkt um 1%.', 'info');
       },
     },
     riskyLever: {
       id: 'riskyLever',
       name: 'Riskanter Hebel',
-      description: '🎲 Einsatz ×1,5 (nur jetzt)',
-      rarity: 'neutral',
+      description: '🎲 Einsatz ×1,5 (1 Runde)',
       type: 'temp',
       rarityTier: 'U',
       icon: '🎲',
+      palette: 'ember',
       apply(state) {
         state.tempModifiers.betMultiplier *= 1.5;
+        pushTickerMessage('Karte', 'Riskanter Hebel: Einsatz ×1,5.', 'info');
       },
     },
     houseTurns: {
       id: 'houseTurns',
-      name: 'Haus dreht nach',
-      description: '🔥 Hauskante +1% dauerhaft',
-      rarity: 'bad',
+      name: 'Haus zieht an',
+      description: '💀 Hauskante +1,5% dauerhaft',
       type: 'perm',
       rarityTier: 'R',
-      icon: '🔥',
+      icon: '💀',
+      palette: 'void',
       apply(state) {
-        state.edge = Math.min(state.edge + 0.01, 0.5);
+        state.edge = Math.min(state.edge + 0.015, 0.5);
+        pushTickerMessage('Karte', 'Hauskante steigt um 1,5%.', 'warning');
+      },
+    },
+    focusSurge: {
+      id: 'focusSurge',
+      name: 'Fokus-Schub',
+      description: '⚡ +8% Erfolg & Einsatz ×1,3 (1 Runde)',
+      type: 'temp',
+      rarityTier: 'R',
+      icon: '⚡',
+      palette: 'aurora',
+      apply(state) {
+        state.tempModifiers.probability += 0.08;
+        state.tempModifiers.betMultiplier *= 1.3;
+        pushTickerMessage('Karte', 'Fokus-Schub: Erfolg +8%, Einsatz ×1,3.', 'info');
+      },
+    },
+    marketPulse: {
+      id: 'marketPulse',
+      name: 'Marktpuls',
+      description: '💹 Sofort +€35',
+      type: 'instant',
+      rarityTier: 'U',
+      icon: '💹',
+      palette: 'circuit',
+      apply(state) {
+        state.money += 35;
+        pushTickerMessage('Karte', 'Marktpuls zahlt €35 aus.', 'info');
+      },
+    },
+    glitchField: {
+      id: 'glitchField',
+      name: 'Glitch-Feld',
+      description: '🪙 Erfolg +12%, Einsatz halbiert (1 Runde)',
+      type: 'temp',
+      rarityTier: 'E',
+      icon: '🪙',
+      palette: 'starlight',
+      apply(state) {
+        state.tempModifiers.probability += 0.12;
+        state.tempModifiers.betMultiplier *= 0.5;
+        pushTickerMessage('Karte', 'Glitch-Feld: Erfolg +12%, Einsatz halbiert.', 'info');
+      },
+    },
+    entropyTax: {
+      id: 'entropyTax',
+      name: 'Entropie-Steuer',
+      description: '🧾 Sofort −€30',
+      type: 'instant',
+      rarityTier: 'U',
+      icon: '🧾',
+      palette: 'void',
+      apply(state) {
+        state.money = Math.max(0, state.money - 30);
+        pushTickerMessage('Karte', 'Entropie kassiert €30.', 'warning');
+      },
+    },
+    probabilityCrash: {
+      id: 'probabilityCrash',
+      name: 'Wahrscheinlichkeitseinbruch',
+      description: '📉 −8% Erfolg (1 Runde)',
+      type: 'temp',
+      rarityTier: 'C',
+      icon: '📉',
+      palette: 'frost',
+      apply(state) {
+        state.tempModifiers.probability -= 0.08;
+        pushTickerMessage('Karte', 'Wahrscheinlichkeitseinbruch: −8% Erfolg.', 'warning');
+      },
+    },
+    luckyStreak: {
+      id: 'luckyStreak',
+      name: 'Streiflicht',
+      description: '🌈 Einsatz ×1,4 & +6% Erfolg (1 Runde)',
+      type: 'temp',
+      rarityTier: 'R',
+      icon: '🌈',
+      palette: 'aurora',
+      apply(state) {
+        state.tempModifiers.betMultiplier *= 1.4;
+        state.tempModifiers.probability += 0.06;
+        pushTickerMessage('Karte', 'Streiflicht: Einsatz ×1,4 & Erfolg +6%.', 'info');
+      },
+    },
+    voidAnchor: {
+      id: 'voidAnchor',
+      name: 'Leerenanker',
+      description: '🪨 Basis-Erfolg −2% dauerhaft',
+      type: 'perm',
+      rarityTier: 'R',
+      icon: '🪨',
+      palette: 'void',
+      apply(state) {
+        state.baseProbability = Utils.clamp(state.baseProbability - 0.02, MIN_PROB, MAX_PROB);
+        pushTickerMessage('Karte', 'Leerenanker senkt den Basis-Erfolg um 2%.', 'warning');
+      },
+    },
+    edgePolish: {
+      id: 'edgePolish',
+      name: 'Kantenpolitur',
+      description: '🪓 Hauskante −1,5% dauerhaft',
+      type: 'perm',
+      rarityTier: 'R',
+      icon: '🪓',
+      palette: 'circuit',
+      apply(state) {
+        state.edge = Math.max(state.edge - 0.015, -0.5);
+        pushTickerMessage('Karte', 'Kantenpolitur: Hauskante sinkt um 1,5%.', 'info');
+      },
+    },
+    quantumCopy: {
+      id: 'quantumCopy',
+      name: 'Quanten-Kopie',
+      description: '🃏 Kopiert die letzte Ablagekarte ins Deck',
+      type: 'instant',
+      rarityTier: 'E',
+      icon: '🃏',
+      palette: 'starlight',
+      apply(state) {
+        if (state.discard.length) {
+          const source = state.discard[state.discard.length - 1];
+          state.deck.push({ ...source });
+          state.deck = Utils.shuffle(state.deck);
+          pushTickerMessage('Karte', `„${source.name}“ wird dupliziert.`, 'info');
+        } else {
+          pushTickerMessage('Karte', 'Keine Karte zum Kopieren.', 'warning');
+        }
       },
     },
   };
@@ -86,7 +217,8 @@
       description: 'Hauskante −2%.',
       price: 200,
       rarityTier: 'R',
-      icon: '🪓',
+      icon: '🛠️',
+      palette: 'circuit',
       apply(state) {
         state.edge = Math.max(state.edge - 0.02, -0.5);
         pushTickerMessage('Shop', 'Hauskante sinkt um 2%.', 'info');
@@ -99,6 +231,7 @@
       price: 180,
       rarityTier: 'U',
       icon: '📈',
+      palette: 'aurora',
       apply(state) {
         state.baseProbability = Utils.clamp(state.baseProbability + 0.02, 0.05, 0.95);
         pushTickerMessage('Shop', 'Basis-Erfolg steigt um 2%.', 'info');
@@ -110,22 +243,64 @@
       description: 'Entfernt „Kaltes Pech“ aus dem Deck.',
       price: 150,
       rarityTier: 'E',
-      icon: '🪄',
-      apply(state) {
-        removeCardFromDeck('coldLuck');
+      icon: '🧊',
+      palette: 'frost',
+      apply() {
+        removeCardFromDeck('coldLuck', 'Kaltes Pech');
       },
     },
     {
-      id: 'addLightTilt',
-      name: 'Neue Karte: Leichte Neigung',
-      description: 'Fügt „Leichte Neigung“ hinzu.',
-      price: 120,
-      rarityTier: 'U',
-      icon: '➕',
+      id: 'banishVoidAnchor',
+      name: 'Anker lösen',
+      description: 'Entfernt „Leerenanker“ aus Deck oder Ablage.',
+      price: 220,
+      rarityTier: 'E',
+      icon: '⚓',
+      palette: 'void',
+      apply() {
+        removeCardFromDeck('voidAnchor', 'Leerenanker');
+      },
+    },
+    {
+      id: 'addFocusSurge',
+      name: 'Neue Karte: Fokus-Schub',
+      description: 'Fügt „Fokus-Schub“ hinzu.',
+      price: 230,
+      rarityTier: 'R',
+      icon: '⚡',
+      palette: 'aurora',
       apply(state) {
-        state.deck.push({ ...CARD_LIBRARY.lightTilt });
+        state.deck.push({ ...CARD_LIBRARY.focusSurge });
         state.deck = Utils.shuffle(state.deck);
-        pushTickerMessage('Shop', 'Neue „Leichte Neigung“ im Deck.', 'info');
+        pushTickerMessage('Shop', '„Fokus-Schub“ betritt dein Deck.', 'info');
+      },
+    },
+    {
+      id: 'addEdgePolish',
+      name: 'Neue Karte: Kantenpolitur',
+      description: 'Fügt „Kantenpolitur“ hinzu.',
+      price: 210,
+      rarityTier: 'R',
+      icon: '🪓',
+      palette: 'circuit',
+      apply(state) {
+        state.deck.push({ ...CARD_LIBRARY.edgePolish });
+        state.deck = Utils.shuffle(state.deck);
+        pushTickerMessage('Shop', '„Kantenpolitur“ veredelt dein Deck.', 'info');
+      },
+    },
+    {
+      id: 'addLuckyStreak',
+      name: 'Neue Karte: Streiflicht',
+      description: 'Fügt „Streiflicht“ hinzu.',
+      price: 160,
+      rarityTier: 'R',
+      icon: '🌈',
+      palette: 'aurora',
+      apply(state) {
+        state.deck.push({ ...CARD_LIBRARY.luckyStreak });
+        state.deck = Utils.shuffle(state.deck);
+        pushTickerMessage('Shop', '„Streiflicht“ glitzert in deinem Deck.', 'info');
       },
     },
     {
@@ -135,6 +310,7 @@
       price: 100,
       rarityTier: 'C',
       icon: '💱',
+      palette: 'circuit',
       apply(state) {
         const currentMax = Math.max(...state.betOptions);
         const newLevel = Math.round(currentMax * 1.5);
@@ -240,6 +416,10 @@
       card.style.setProperty('--pointer-y', '50%');
       card.style.setProperty('--sheen-x', '50%');
       card.style.setProperty('--sheen-y', '50%');
+      card.style.setProperty('--holo-pos-x', '50%');
+      card.style.setProperty('--holo-pos-y', '50%');
+      card.style.setProperty('--holo-rotation', '45deg');
+      card.style.setProperty('--sheen-angle', '118deg');
       if (!prefersReducedMotion) {
         setTimeout(() => {
           if (card.isConnected) {
@@ -264,10 +444,18 @@
       activeCard.style.transform = `perspective(900px) rotateX(${rotX.toFixed(2)}deg) rotateY(${rotY.toFixed(2)}deg)`;
       activeCard.style.setProperty('--pointer-x', `${(pointer.x * 100).toFixed(2)}%`);
       activeCard.style.setProperty('--pointer-y', `${(pointer.y * 100).toFixed(2)}%`);
-      const sheenX = 50 + (pointer.x - 0.5) * 24;
-      const sheenY = 50 + (pointer.y - 0.5) * 16;
-      activeCard.style.setProperty('--sheen-x', `${sheenX}%`);
-      activeCard.style.setProperty('--sheen-y', `${sheenY}%`);
+      const sheenX = 50 + (pointer.x - 0.5) * 60;
+      const sheenY = 50 + (pointer.y - 0.5) * 40;
+      activeCard.style.setProperty('--sheen-x', `${sheenX.toFixed(2)}%`);
+      activeCard.style.setProperty('--sheen-y', `${sheenY.toFixed(2)}%`);
+      const holoX = 50 + (pointer.x - 0.5) * 36;
+      const holoY = 50 + (pointer.y - 0.5) * 32;
+      activeCard.style.setProperty('--holo-pos-x', `${holoX.toFixed(2)}%`);
+      activeCard.style.setProperty('--holo-pos-y', `${holoY.toFixed(2)}%`);
+      const holoRotation = 45 + (pointer.x - 0.5) * 60 - (pointer.y - 0.5) * 40;
+      activeCard.style.setProperty('--holo-rotation', `${holoRotation.toFixed(2)}deg`);
+      const sheenAngle = 118 + (pointer.x - 0.5) * 35 - (pointer.y - 0.5) * 28;
+      activeCard.style.setProperty('--sheen-angle', `${sheenAngle.toFixed(2)}deg`);
       frame = null;
     };
 
@@ -278,7 +466,7 @@
       card.classList.add('card-shine');
       setTimeout(() => {
         card.classList.remove('card-shine');
-      }, 260);
+      }, 620);
     };
 
     const handleEnter = (event) => {
@@ -439,6 +627,12 @@
     E: 'Episch',
   };
 
+  const TYPE_LABELS = {
+    temp: '1 Runde',
+    perm: 'Dauerhaft',
+    instant: 'Sofort',
+  };
+
   const RARITY_TIER_BY_TYPE = {
     good: 'R',
     bad: 'C',
@@ -460,6 +654,10 @@
     return RARITY_LABELS[tier] || RARITY_LABELS.C;
   }
 
+  function getTypeLabel(type) {
+    return TYPE_LABELS[type] || TYPE_LABELS.temp;
+  }
+
   function getCardIcon(card) {
     return (card && card.icon) || DEFAULT_CARD_ICON;
   }
@@ -470,14 +668,15 @@
       title: overrides.title || card.name,
       description: overrides.description || card.description,
       icon: overrides.icon || getCardIcon(card),
-      typeLabel: overrides.typeLabel || (card.type === 'perm' ? 'Dauerhaft' : '1 Runde'),
+      typeLabel: overrides.typeLabel || getTypeLabel(card.type),
       rarityTier,
+      palette: overrides.palette || card.palette,
       ariaLabel:
         overrides.ariaLabel || `${overrides.title || card.name}: ${overrides.description || card.description}`,
     };
   }
 
-  function createCardShell({ context, active, rarityTier, ariaLabel, size }) {
+  function createCardShell({ context, active, rarityTier, ariaLabel, size, palette }) {
     const card = document.createElement('div');
     card.className = 'game-card';
     card.dataset.context = context;
@@ -485,6 +684,9 @@
     card.dataset.rarity = rarityTier;
     if (size) {
       card.dataset.size = size;
+    }
+    if (palette) {
+      card.dataset.palette = palette;
     }
     card.setAttribute('aria-label', ariaLabel);
     card.tabIndex = 0;
@@ -501,7 +703,7 @@
   }
 
   function createGameCardView(data, options = {}) {
-    const { context = 'deck', active = false, size = 'compact', footer } = options;
+    const { context = 'deck', active = false, size = 'compact', footer, palette } = options;
     const rarityTier = data.rarityTier || 'C';
     const ariaLabel = data.ariaLabel || `${data.title}: ${data.description}`;
     const { card, inner } = createCardShell({
@@ -510,6 +712,7 @@
       rarityTier,
       ariaLabel,
       size,
+      palette: palette || data.palette,
     });
 
     const header = document.createElement('div');
@@ -639,7 +842,9 @@
         context: 'deck',
         active: isTopCard && allowDeckTilt,
         size: 'compact',
-        footer: isTopCard ? (allowDeckTilt ? 'Bereit' : 'Wartet') : 'Im Stapel',
+        footer: isTopCard
+          ? `${allowDeckTilt ? 'Bereit' : 'Wartet'} · ${data.typeLabel}`
+          : data.typeLabel,
       });
       li.appendChild(cardEl);
       elements.deckList.appendChild(li);
@@ -788,6 +993,7 @@
       typeLabel: 'Shop',
       rarityTier: offer.rarityTier || 'U',
       ariaLabel: `${offer.name}: ${offer.description}. Preis €${offer.price}.`,
+      palette: offer.palette || 'shop',
     };
 
     if (elements.shopCardPreview) {
@@ -796,6 +1002,7 @@
         active: false,
         size: 'compact',
         footer: `€${offer.price}`,
+        palette: cardData.palette,
       });
       elements.shopCardPreview.appendChild(previewCard);
       CardEffects.refresh(elements.shopCardPreview);
@@ -807,6 +1014,7 @@
         active: true,
         size: 'regular',
         footer: `€${offer.price}`,
+        palette: cardData.palette,
       });
       elements.shopModalCard.appendChild(modalCard);
       CardEffects.refresh(elements.shopModalCard);
@@ -855,14 +1063,20 @@
     cards.push(
       { ...CARD_LIBRARY.lightTilt },
       { ...CARD_LIBRARY.lightTilt },
-      { ...CARD_LIBRARY.lightTilt },
+      { ...CARD_LIBRARY.focusSurge },
+      { ...CARD_LIBRARY.riskyLever },
+      { ...CARD_LIBRARY.riskyLever },
       { ...CARD_LIBRARY.coldLuck },
       { ...CARD_LIBRARY.coldLuck },
-      { ...CARD_LIBRARY.coldLuck },
+      { ...CARD_LIBRARY.probabilityCrash },
+      { ...CARD_LIBRARY.glitchField },
       { ...CARD_LIBRARY.luckyBreak },
-      { ...CARD_LIBRARY.riskyLever },
-      { ...CARD_LIBRARY.riskyLever },
       { ...CARD_LIBRARY.houseTurns },
+      { ...CARD_LIBRARY.entropyTax },
+      { ...CARD_LIBRARY.marketPulse },
+      { ...CARD_LIBRARY.luckyStreak },
+      { ...CARD_LIBRARY.voidAnchor },
+      { ...CARD_LIBRARY.quantumCopy },
     );
     return Utils.shuffle(cards);
   }
@@ -1017,6 +1231,7 @@
 
     if (!card) {
       elements.cardElement.dataset.rarity = 'C';
+      delete elements.cardElement.dataset.palette;
       elements.cardElement.setAttribute('aria-label', 'Keine Karte ausgewählt');
       if (rarity) rarity.textContent = '---';
       if (type) type.textContent = '---';
@@ -1033,9 +1248,14 @@
 
     const rarityTier = getRarityTier(card);
     elements.cardElement.dataset.rarity = rarityTier;
+    if (card.palette) {
+      elements.cardElement.dataset.palette = card.palette;
+    } else {
+      delete elements.cardElement.dataset.palette;
+    }
     elements.cardElement.setAttribute('aria-label', `${card.name}: ${card.description}`);
     if (rarity) rarity.textContent = getRarityLabel(rarityTier);
-    if (type) type.textContent = card.type === 'perm' ? 'Dauerhaft' : '1 Runde';
+    if (type) type.textContent = getTypeLabel(card.type);
     if (icon) icon.textContent = getCardIcon(card);
     if (title) title.textContent = card.name;
     if (description) description.textContent = card.description;
@@ -1168,7 +1388,7 @@
     updateShopCountdown();
   }
 
-  function removeCardFromDeck(cardId) {
+  function removeCardFromDeck(cardId, displayName) {
     const removeFrom = (collection) => {
       const index = collection.findIndex((card) => card.id === cardId);
       if (index >= 0) {
@@ -1178,11 +1398,13 @@
       return false;
     };
 
+    const label = displayName || cardId;
+
     if (removeFrom(state.deck) || removeFrom(state.discard)) {
-      pushTickerMessage('Shop', '„Kaltes Pech“ entfernt.', 'info');
+      pushTickerMessage('Shop', `„${label}“ entfernt.`, 'info');
       renderDeckList();
     } else {
-      pushTickerMessage('Shop', 'Keine „Kaltes Pech“-Karte gefunden.', 'warning');
+      pushTickerMessage('Shop', `Keine „${label}“-Karte gefunden.`, 'warning');
     }
   }
 

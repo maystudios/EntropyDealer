@@ -16,87 +16,208 @@
 .game-card {
   --acc: #94a3b8;
   --acc-soft: rgba(148, 163, 184, 0.18);
-  --glow: rgba(148, 163, 184, 0.2);
-  --sheen-opacity: 0.25;
-  --glare-opacity: 0.18;
+  --glow: rgba(148, 163, 184, 0.26);
+  --sheen-opacity: 0.28;
+  --glare-opacity: 0.22;
+  --holo-intensity: 0.55;
+  --holo-noise-opacity: 0.32;
+  --holo-strength: 1;
+  --holo-pos-x: 50%;
+  --holo-pos-y: 50%;
+  --holo-rotation: 45deg;
+  --sheen-angle: 118deg;
+  --pointer-x: 50%;
+  --pointer-y: 50%;
+  --card-padding: 1.25rem;
   position: relative;
   display: block;
   width: 100%;
-  aspect-ratio: 5 / 7;
+  aspect-ratio: 63 / 88;
   border-radius: var(--card-radius);
   border: 1px solid rgba(148, 163, 184, 0.25);
-  background-image: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.75)),
-    linear-gradient(160deg, var(--acc-soft), rgba(8, 13, 23, 0.4));
-  box-shadow: 0 28px 60px rgba(5, 9, 15, 0.55), 0 0 0 1px rgba(148, 163, 184, 0.12),
-    0 22px 45px var(--glow);
+  background-image:
+    radial-gradient(120% 140% at 28% 18%, rgba(91, 212, 255, 0.18), transparent 65%),
+    radial-gradient(110% 130% at 72% 82%, rgba(167, 139, 250, 0.16), transparent 60%),
+    linear-gradient(145deg, rgba(9, 14, 23, 0.96), rgba(14, 20, 30, 0.82));
+  box-shadow:
+    0 32px 70px rgba(5, 9, 15, 0.6),
+    0 0 0 1px rgba(148, 163, 184, 0.12),
+    0 28px 60px var(--glow);
   overflow: hidden;
   padding: 1px;
   isolation: isolate;
   transform-style: preserve-3d;
   transform: perspective(900px) rotateX(0deg) rotateY(0deg);
-  transition: transform 0.3s ease, box-shadow 0.35s ease, filter 0.3s ease;
+  transition: transform 0.35s ease, box-shadow 0.4s ease, filter 0.3s ease;
   will-change: transform;
 }
 
+.game-card::before,
+.game-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  mix-blend-mode: color-dodge;
+  transition: opacity 0.35s ease;
+}
+
+.game-card::before {
+  background-image:
+    radial-gradient(circle at var(--holo-pos-x, 50%) var(--holo-pos-y, 50%), rgba(255, 255, 255, 0.5), transparent 60%),
+    conic-gradient(from var(--holo-rotation, 45deg), var(--holo-1, #5bd4ff) 0%, var(--holo-2, #a78bfa) 32%, var(--holo-3, #facc15) 64%, var(--holo-1, #5bd4ff) 100%);
+  background-size: 150% 150%, 220% 220%;
+  background-position: var(--holo-pos-x, 50%) var(--holo-pos-y, 50%), 50% 50%;
+  filter: saturate(1.35) contrast(1.08);
+  opacity: calc(var(--holo-intensity, 0.55) * var(--holo-strength));
+  transform: translateZ(20px);
+  animation: holoDrift 18s linear infinite;
+}
+
+.game-card::after {
+  background-image:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.05) 40%, transparent 75%),
+    repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0 2px, transparent 2px 4px),
+    repeating-radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.14) 0 1px, transparent 1px 4px);
+  background-size: 180% 180%, 90px 90px, 140px 140px;
+  background-position: var(--holo-pos-x, 50%) var(--holo-pos-y, 50%), 0% 0%, 40% 60%;
+  opacity: calc(var(--holo-noise-opacity, 0.32) * var(--holo-strength));
+  transform: translateZ(16px);
+  animation: holoNoise 4s ease-in-out infinite;
+}
+
 .game-card[data-context='deck'] {
-  --sheen-opacity: 0.18;
-  --glare-opacity: 0.12;
-  box-shadow: 0 20px 48px rgba(5, 9, 15, 0.5), 0 0 0 1px rgba(148, 163, 184, 0.1),
-    0 16px 36px var(--glow);
+  --sheen-opacity: 0.2;
+  --glare-opacity: 0.15;
+  --holo-intensity: 0.42;
+  --holo-noise-opacity: 0.26;
+  box-shadow:
+    0 24px 55px rgba(5, 9, 15, 0.55),
+    0 0 0 1px rgba(148, 163, 184, 0.1),
+    0 20px 40px var(--glow);
 }
 
 .game-card[data-context='shop'] {
-  --sheen-opacity: 0.22;
-  --glare-opacity: 0.16;
-  box-shadow: 0 26px 60px rgba(5, 9, 15, 0.52), 0 0 0 1px rgba(148, 163, 184, 0.15),
-    0 18px 42px var(--glow);
+  --sheen-opacity: 0.24;
+  --glare-opacity: 0.18;
+  --holo-intensity: 0.5;
+  --holo-noise-opacity: 0.3;
+  box-shadow:
+    0 30px 70px rgba(5, 9, 15, 0.56),
+    0 0 0 1px rgba(148, 163, 184, 0.14),
+    0 24px 48px var(--glow);
 }
 
 .game-card[data-context='drawn'] {
-  --sheen-opacity: 0.33;
-  --glare-opacity: 0.24;
-  box-shadow: 0 32px 70px rgba(5, 9, 15, 0.55), 0 0 0 1px rgba(148, 163, 184, 0.18),
-    0 24px 55px var(--glow);
+  --sheen-opacity: 0.36;
+  --glare-opacity: 0.3;
+  --holo-intensity: 0.72;
+  --holo-noise-opacity: 0.4;
+  box-shadow:
+    0 36px 80px rgba(5, 9, 15, 0.62),
+    0 0 0 1px rgba(148, 163, 184, 0.2),
+    0 32px 70px var(--glow);
+}
+
+.game-card[data-size='regular'] {
+  --card-padding: 1.1rem;
+}
+
+.game-card[data-size='large'] {
+  --card-padding: 1.4rem;
+}
+
+.game-card[data-size='compact'] {
+  --card-padding: 0.95rem;
+  aspect-ratio: 5 / 7;
 }
 
 .game-card[data-rarity='C'] {
   --acc: #94a3b8;
-  --acc-soft: rgba(148, 163, 184, 0.16);
-  --glow: rgba(148, 163, 184, 0.22);
+  --acc-soft: rgba(148, 163, 184, 0.18);
+  --glow: rgba(148, 163, 184, 0.26);
 }
 
 .game-card[data-rarity='U'] {
   --acc: #5bd4ff;
-  --acc-soft: rgba(91, 212, 255, 0.22);
-  --glow: rgba(91, 212, 255, 0.3);
+  --acc-soft: rgba(91, 212, 255, 0.26);
+  --glow: rgba(91, 212, 255, 0.32);
 }
 
 .game-card[data-rarity='R'] {
   --acc: #a78bfa;
-  --acc-soft: rgba(167, 139, 250, 0.26);
-  --glow: rgba(167, 139, 250, 0.32);
+  --acc-soft: rgba(167, 139, 250, 0.28);
+  --glow: rgba(167, 139, 250, 0.34);
 }
 
 .game-card[data-rarity='E'] {
   --acc: #facc15;
-  --acc-soft: rgba(250, 204, 21, 0.28);
-  --glow: rgba(250, 204, 21, 0.34);
+  --acc-soft: rgba(250, 204, 21, 0.32);
+  --glow: rgba(250, 204, 21, 0.4);
 }
 
 .game-card[data-active='false'] {
-  filter: saturate(0.68) brightness(0.92);
-  box-shadow: 0 18px 42px rgba(5, 9, 15, 0.45), 0 0 0 1px rgba(148, 163, 184, 0.08),
-    0 10px 22px rgba(15, 23, 42, 0.45);
+  filter: saturate(0.78) brightness(0.94);
+  --holo-strength: 0.45;
+  box-shadow:
+    0 20px 48px rgba(5, 9, 15, 0.5),
+    0 0 0 1px rgba(148, 163, 184, 0.08),
+    0 16px 32px rgba(15, 23, 42, 0.55);
 }
 
-.game-card[data-active='false'] .card-sheen,
-.game-card[data-active='false'] .card-glare {
-  opacity: 0.1;
+.game-card[data-palette='aurora'] {
+  --holo-1: #5bd4ff;
+  --holo-2: #a78bfa;
+  --holo-3: #facc15;
+}
+
+.game-card[data-palette='ember'] {
+  --holo-1: #ff9a62;
+  --holo-2: #f97316;
+  --holo-3: #facc15;
+}
+
+.game-card[data-palette='frost'] {
+  --holo-1: #60a5fa;
+  --holo-2: #38bdf8;
+  --holo-3: #c084fc;
+}
+
+.game-card[data-palette='void'] {
+  --holo-1: #6366f1;
+  --holo-2: #9333ea;
+  --holo-3: #f472b6;
+}
+
+.game-card[data-palette='starlight'] {
+  --holo-1: #f472b6;
+  --holo-2: #c084fc;
+  --holo-3: #facc15;
+}
+
+.game-card[data-palette='circuit'] {
+  --holo-1: #34d399;
+  --holo-2: #22d3ee;
+  --holo-3: #a78bfa;
+}
+
+.game-card[data-palette='shop'] {
+  --holo-1: #5bd4ff;
+  --holo-2: #34d399;
+  --holo-3: #f9a8d4;
 }
 
 .game-card:focus-visible {
   outline: 2px solid var(--acc);
   outline-offset: 6px;
+}
+
+.game-card[data-active='true']::before,
+.game-card[data-active='true']::after,
+.game-card[data-active='true'] .card-sheen,
+.game-card[data-active='true'] .card-glare {
+  opacity: 1;
 }
 
 .card-sheen,
@@ -105,63 +226,155 @@
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  transition: opacity 0.3s ease, transform 0.3s ease;
+  transition: opacity 0.35s ease;
 }
 
 .card-sheen {
-  background: linear-gradient(125deg, rgba(255, 255, 255, 0.28), transparent 60%);
-  opacity: var(--sheen-opacity, 0.25);
+  background-image:
+    linear-gradient(var(--sheen-angle, 118deg), rgba(255, 255, 255, 0.65) 0%, rgba(255, 255, 255, 0.1) 45%, transparent 80%),
+    radial-gradient(circle at var(--pointer-x, 50%) var(--pointer-y, 50%), rgba(255, 255, 255, 0.22), transparent 65%);
+  background-size: 180% 180%, 140% 140%;
+  background-position: var(--sheen-x, 50%) var(--sheen-y, 50%), var(--pointer-x, 50%) var(--pointer-y, 50%);
   mix-blend-mode: screen;
-  transform: translate3d(0, 0, 2px);
-  background-size: 160%;
-  background-position: var(--sheen-x, 50%) var(--sheen-y, 50%);
+  opacity: var(--sheen-opacity, 0.3);
+  transform: translateZ(22px);
 }
 
 .card-glare {
   background: radial-gradient(
     circle at var(--pointer-x, 50%) var(--pointer-y, 50%),
-    rgba(255, 255, 255, 0.45),
-    transparent 60%
+    rgba(255, 255, 255, 0.35),
+    rgba(255, 255, 255, 0.06) 45%,
+    transparent 70%
   );
   opacity: var(--glare-opacity, 0.2);
   mix-blend-mode: screen;
-  transform: translate3d(0, 0, 1px);
+  transform: translateZ(18px);
 }
 
 .card-inner {
   position: relative;
-  z-index: 2;
+  z-index: 3;
   display: flex;
   height: 100%;
   flex-direction: column;
   justify-content: space-between;
   gap: 1rem;
-  padding: 1.25rem;
-  border-radius: calc(var(--card-radius) - 0.35rem);
-  background: rgba(8, 15, 26, 0.78);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(148, 163, 184, 0.14);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  padding: var(--card-padding);
+  border-radius: calc(var(--card-radius) - 0.4rem);
+  background: linear-gradient(150deg, rgba(8, 15, 26, 0.86), rgba(10, 16, 26, 0.72));
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
   text-align: left;
 }
 
 .game-card[data-active='true'] .card-inner {
-  border-color: var(--acc-soft);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.18);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.game-card.card-shine::before {
+  animation: holoFlash 0.6s ease-out;
+}
+
+.game-card.card-shine::after {
+  animation: holoNoiseFlash 0.6s ease-out;
 }
 
 .game-card.card-shine .card-sheen {
-  animation: cardShine 0.25s ease forwards;
+  animation: sheenSweep 0.6s ease-out;
 }
 
-@keyframes cardShine {
+.game-card.card-shine .card-glare {
+  animation: glarePulse 0.6s ease-out;
+}
+
+@keyframes holoDrift {
   0% {
-    opacity: 0.05;
-    transform: translate3d(-30%, 0, 2px);
+    background-size: 150% 150%, 220% 220%;
+    background-position: var(--holo-pos-x, 50%) var(--holo-pos-y, 50%), 50% 50%;
+    filter: saturate(1.25) contrast(1.05);
+  }
+  50% {
+    background-size: 165% 165%, 230% 230%;
+    background-position: calc(var(--holo-pos-x, 50%) + 12%) calc(var(--holo-pos-y, 50%) - 10%), 55% 45%;
+    filter: saturate(1.55) contrast(1.18);
   }
   100% {
-    opacity: var(--sheen-opacity, 0.25);
-    transform: translate3d(25%, 0, 2px);
+    background-size: 150% 150%, 220% 220%;
+    background-position: var(--holo-pos-x, 50%) var(--holo-pos-y, 50%), 50% 50%;
+    filter: saturate(1.35) contrast(1.08);
+  }
+}
+
+@keyframes holoNoise {
+  0% {
+    background-position: var(--holo-pos-x, 50%) var(--holo-pos-y, 50%), 0% 0%, 40% 60%;
+    opacity: calc(var(--holo-noise-opacity, 0.32) * var(--holo-strength));
+  }
+  50% {
+    background-position: calc(var(--holo-pos-x, 50%) - 15%) calc(var(--holo-pos-y, 50%) + 12%), 40% 60%, 65% 45%;
+    opacity: calc(var(--holo-noise-opacity, 0.32) * var(--holo-strength) + 0.08);
+  }
+  100% {
+    background-position: var(--holo-pos-x, 50%) var(--holo-pos-y, 50%), 0% 0%, 40% 60%;
+    opacity: calc(var(--holo-noise-opacity, 0.32) * var(--holo-strength));
+  }
+}
+
+@keyframes holoFlash {
+  0% {
+    opacity: calc(var(--holo-intensity, 0.55) * 0.25);
+    filter: saturate(1.1) contrast(1.05);
+  }
+  45% {
+    opacity: calc(var(--holo-intensity, 0.55) * 1.35);
+    filter: saturate(1.65) contrast(1.35);
+  }
+  100% {
+    opacity: calc(var(--holo-intensity, 0.55) * var(--holo-strength));
+    filter: saturate(1.35) contrast(1.08);
+  }
+}
+
+@keyframes holoNoiseFlash {
+  0% {
+    opacity: calc(var(--holo-noise-opacity, 0.32) * 0.4);
+  }
+  40% {
+    opacity: calc(var(--holo-noise-opacity, 0.32) * 1.25);
+    background-position: calc(var(--holo-pos-x, 50%) + 10%) calc(var(--holo-pos-y, 50%) - 8%), 25% 35%, 55% 50%;
+  }
+  100% {
+    opacity: calc(var(--holo-noise-opacity, 0.32) * var(--holo-strength));
+  }
+}
+
+@keyframes sheenSweep {
+  0% {
+    background-position: -80% 40%, var(--pointer-x, 50%) var(--pointer-y, 50%);
+    opacity: 0.08;
+  }
+  50% {
+    background-position: 40% 50%, var(--pointer-x, 50%) var(--pointer-y, 50%);
+    opacity: var(--sheen-opacity, 0.3);
+  }
+  100% {
+    background-position: 160% 60%, var(--pointer-x, 50%) var(--pointer-y, 50%);
+    opacity: 0.12;
+  }
+}
+
+@keyframes glarePulse {
+  0% {
+    opacity: 0.1;
+  }
+  50% {
+    opacity: var(--glare-opacity, 0.2);
+  }
+  100% {
+    opacity: 0.15;
   }
 }
 
@@ -250,9 +463,23 @@
     transform: none !important;
   }
 
+  .game-card::before,
+  .game-card::after {
+    animation: none !important;
+    opacity: 0.2;
+  }
+
   .card-sheen,
   .card-glare {
-    opacity: 0.08;
+    opacity: 0.12;
     transition: opacity 0.15s ease;
+    animation: none !important;
+  }
+
+  .game-card.card-shine::before,
+  .game-card.card-shine::after,
+  .game-card.card-shine .card-sheen,
+  .game-card.card-shine .card-glare {
+    animation: none !important;
   }
 }
